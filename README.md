@@ -5,6 +5,8 @@ This is the source code of the Super Luigi Land Wii mod, which you can download 
 
 The source code of this mod is based off of the Newer Super Mario Bros. Wii source code, hence why this repo is a fork of it.
 
+If you use any of our code for your mod, please credit the New Luigi Team.
+
 You can find the original README wrote by Treeki down below.
 
 ### Preamble
