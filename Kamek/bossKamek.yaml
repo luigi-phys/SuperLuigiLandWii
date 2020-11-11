@@ -1,0 +1,114 @@
+---
+
+
+source_files: [../src/bossKamekMario.cpp, ../src/bossKamekMagicBullet.cpp, ../src/bossKamekMain.cpp, ../src/bossKamekGiant.cpp]
+hooks:
+
+  ############################################
+  #Replaces Actor 329 AC_ITEM_KEY (Sprite 77)#
+  ############################################
+  - name: KamekMarioBuild
+    type: add_func_pointer
+    src_addr_pal: 0x8095E108
+    target_func: 'daKameckMario_c::build()'
+
+  - name: UpdateKamekMarioSpriteInfo
+    type: patch
+    # 0x8030A340 + sprite num * 0x28 == offset
+    addr_pal: 0x8030af48
+    #      -ID- ----  -X Offs- -Y Offs-  -RectX1- -RectY1- -RectX2- -RectY2-  -1C- -1E- -20- -22-  Flag ----
+    data: '0149 0000  00000008 FFFFFFF0  00000000 00000010 000000FF 00000010  0000 0000 0000 0000  0000 0000'
+
+  #############################################
+  #Replaces Actor 172 BIGHANA_MGR (Sprite 241)#
+  #############################################
+  - name: KamekMagicBulletBuild
+    type: add_func_pointer
+    src_addr_pal: 0x80952998
+    target_func: 'daKameckMagicBullet_c::build()'
+
+  - name: KamekMagicBulletSpriteFileInfo
+    type: add_func_pointer
+    src_addr_pal: 0x8031af10
+    target_func: 'KMBarcNameList'
+    # 0x8031AB4C + sprite num * 0x4 == offset
+
+  - name: KAMEK_MAGIC_test
+    type: add_func_pointer
+    src_addr_pal: 0x80961CF0
+    target_func: 'daKameckMagic_c::getsettings()'
+
+  - name: ChangeWaitState_Begin
+    type: branch_insn
+    branch_type: b
+    src_addr_pal: 0x8081BF10
+    target_func: 'daKameckMagic_c::newMoveBegin()'
+
+  - name: ChangeWaitState_Execute
+    type: branch_insn
+    branch_type: b
+    src_addr_pal: 0x8081BF20
+    target_func: 'daKameckMagic_c::newMoveExecute()'
+
+  - name: ChangeWaitState_End
+    type: patch
+    addr_pal: 0x8081BFD0
+    data: '480001c0'
+
+  ############################################
+  #Replaces Actor 327 EN_TESTMAN (Sprite 415)#
+  ############################################
+  - name: BossKamekBuild
+    type: add_func_pointer
+    src_addr_pal: 0x80B0B090
+    target_func: 'daBossKameck_c::build()'
+
+  - name: BossKamekSpriteFileInfo
+    type: add_func_pointer
+    src_addr_pal: 0x8031b1c8
+    target_func: 'KMarcNameList'
+    # 0x8031AB4C + sprite num * 0x4 == offset
+
+  - name: UpdateBossKamekSpriteInfo
+    type: patch
+    # 0x8030A340 + sprite num * 0x28 == offset
+    addr_pal: 0x8030e418
+    #      -ID- ----  -X Offs- -Y Offs-  -RectX1- -RectY1- -RectX2- -RectY2-  -1C- -1E- -20- -22-  Flag ----
+    data: '0147 0000  00000008 FFFFFFF0  00000000 00000010 000000FF 00000010  0000 0000 0000 0000  0000 0000'
+
+  - name: KAMEK_kill
+    type: add_func_pointer
+    src_addr_pal: 0x80B7CB0C
+    target_func: 'daBossKameckDemo_c::newOnExecute()'
+
+  #############################################
+  #Replaces Actor 162 EN_PUKUCOIN (Sprite 116)#
+  #############################################
+  - name: KamekGiantBuild
+    type: add_func_pointer
+    src_addr_pal: 0x80B03618
+    target_func: 'daBossKameckGiant_c::build()'
+
+  - name: KamekGiantSpriteFileInfo
+    type: add_func_pointer
+    src_addr_pal: 0x8031ad1c
+    target_func: 'KMGarcNameList'
+    # 0x8031AB4C + sprite num * 0x4 == offset
+
+  - name: UpdateKamekGiantSpriteInfo
+    type: patch
+    # 0x8030A340 + sprite num * 0x28 == offset
+    addr_pal: 0x8030b560
+    #      -ID- ----  -X Offs- -Y Offs-  -RectX1- -RectY1- -RectX2- -RectY2-  -1C- -1E- -20- -22-  Flag ----
+    data: '00A2 0000  00000008 FFFFFFF0  00000000 00000010 00000FFF 00000FFF  0000 0000 0000 0000  0000 0000'
+
+  - name: EN_BUBBLE_kill
+    type: add_func_pointer
+    src_addr_pal: 0x80ADF048
+    target_func: 'EN_BUBBLE::newOnExecute()'
+
+  - name: Peach_Scream_Luigi
+    type: patch
+    addr_pal: 0x80B494FC
+    data: '38800447'
+

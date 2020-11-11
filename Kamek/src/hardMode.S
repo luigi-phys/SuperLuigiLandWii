@@ -55,4 +55,8 @@ NoOneHitKill:
 enableHardMode:
 	.byte 0
 
+.global wasHardModeReallyEnabled
+wasHardModeReallyEnabled:
+	.byte 0
+
 .align 4

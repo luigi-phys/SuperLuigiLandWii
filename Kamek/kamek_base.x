@@ -13,6 +13,48 @@ SECTIONS {
 
 	ContinueFromFuckLineLiftActivation = 0x80839B04;
 
+	CanExitThisLevel = 0x800B4E30;
+
+	dword_803521BC = 0x803521BC;
+	dword_803521A8 = 0x803521A8;
+	dword_8042A5B0 = 0x8042A5B0;
+
+	onExecute_orig__18daBossKameckDemo_cFv = 0x80B395A0;
+
+	onExecute_orig__9scoreshitFv = 0x8010CDE0;
+
+	onExecute_orig__9EN_BUBBLEFv = 0x809D07A0;
+	onExecute_orig__8EN_DOSUNFv = 0x809F5E10;
+	onExecute_orig__11EN_NOKONOKOFv = 0x80A72BE0;
+	onExecute_orig__10EN_CHOROPUFv = 0x809D8E60;
+	onExecute_orig__9EN_KURIBOFv = 0x80031470;
+	onExecute_orig__9EN_BOMHEIFv = 0x809C91E0;
+	onExecute_orig__16daEnBossKameck_cFv = 0x80B395A0;
+
+	ContinueFromPlatformSpeed = 0x80B3C004;
+	ContinueFromPlatformSpeedTwo = 0x80B3BFE0;
+	ContinueFromPlatformSpeedThree = 0x80B3C000;
+
+	executeAutoscroll__7dBgGm_cFv = 0x80079E80;
+
+	disableAutoscroll__8BgGmBaseFv = 0x8007A6B0;
+
+	onExecute_orig__10EN_AUTOSCRFv = 0x809A6050;
+
+	onCreate_orig__15daKameckMagic_cFv = 0x8081B8C0;
+	StateID_Wait__15daKameckMagic_c = 0x80999CC4;
+	StateID_Move__15daKameckMagic_c = 0x80999D04;
+	Wait_Begin__15daKameckMagic_cFv = 0x8081BF10;
+	Wait_Execute__15daKameckMagic_cFv = 0x8081BF20;
+	Wait_End__15daKameckMagic_cFv = 0x8081BFD0;
+	Move_Begin__15daKameckMagic_cFv = 0x8081BFE0;
+	Move_Execute__15daKameckMagic_cFv = 0x8081C050;
+	Move_End__15daKameckMagic_cFv = 0x8081C190;
+
+	onExecute_orig__14dGameDisplay_cFv = 0x801580D0;
+	instance__14dGameDisplay_c = 0x8042a608;
+	pow = 0x802E5894;
+
 	GabonRock_DropOutState = 0x80998CF0;
 	GabonRock_CrushState = 0x80998CB0;
 	forceHCGROPushBack = 0x8001DED0;
@@ -293,6 +335,7 @@ SECTIONS {
 	instance__7WLClass = 0x80429F74;
 	disableDemoControl__7WLClassFb = 0x8005CA50;
 	demoControlAllPlayers__7WLClassFv = 0x8005C930;
+	activateStandardAnim__7WLClassFv = 0x8005CE50;
 
 	ShakeScreen = 0x800D8D50;
 	StageScreen = 0x8042A2E8;
@@ -1581,6 +1624,7 @@ SECTIONS {
 	queryEntrySomething__Q23m3d8anmClr_cFv = 0x80166470;
 	setEntryByte34__Q23m3d8anmClr_cFUci = 0x80166480;
 	getEntryField28__Q23m3d8anmClr_cFv = 0x801664A0;
+	process__Q23m3d8anmClr_cFv = 0x80166310;
 
 	/* m3d::anmTexPat_c */
 	__vt__Q23m3d11anmTexPat_c = 0x80329890;

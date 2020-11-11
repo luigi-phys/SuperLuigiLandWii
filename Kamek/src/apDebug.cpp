@@ -17,10 +17,10 @@ class APDebugDrawer : public m3d::proc_c {
 
 
 static APDebugDrawer defaultInstance;
-bool enableDebugMode = false;
+bool enableCollisionMode = false;
 
 int APDebugDraw() {
-	if (enableDebugMode)
+	if (enableCollisionMode)
 		defaultInstance.drawMe();
 	return 1;
 }
@@ -110,7 +110,7 @@ void APDebugDrawer::drawXlu() {
 //					ap->owner->pos.x, ap->owner->pos.y,
 //					ap->owner->scale.x, ap->owner->scale.y);
 
-		u32 uptr = (u32)ap;
+		u32 uptr = 0x000000;
 		u8 r = (uptr>>16)&0xFF;
 		u8 g = (uptr>>8)&0xFF;
 		u8 b = uptr&0xFF;

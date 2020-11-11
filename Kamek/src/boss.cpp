@@ -94,6 +94,31 @@ bool GrowBoss(daBoss *actor, daKameckDemo *Kameck, float initialScale, float end
 }
 
 
+bool doKamek(daBoss *actor, daKameckDemo *Kameck, int timer) {
+	if (timer == 130) { actor->Kameck->doStateChange(&daKameckDemo::StateID_DemoSt); }
+	if (timer == 400) { actor->Kameck->doStateChange(&daKameckDemo::StateID_DemoSt2); }
+
+
+
+
+	if (timer == 360) {
+		Vec tempPos = (Vec){actor->pos.x - 40.0f, actor->pos.y + 120.0f, 3564.0f};
+		S16Vec nullRot = {0,0,0};
+		Vec oneVec = {1.0f, 1.0f, 1.0f};
+		SpawnEffect("Wm_ob_greencoinkira", 0, &tempPos, &nullRot, &oneVec);
+		SpawnEffect("Wm_mr_yoshiicehit_a", 0, &tempPos, &nullRot, &oneVec);
+		SpawnEffect("Wm_mr_yoshiicehit_b", 0, &tempPos, &nullRot, &oneVec);
+		SpawnEffect("Wm_ob_redringget", 0, &tempPos, &nullRot, &oneVec);
+		SpawnEffect("Wm_ob_keyget01", 0, &tempPos, &nullRot, &oneVec);
+		SpawnEffect("Wm_ob_greencoinkira_a", 0, &tempPos, &nullRot, &oneVec);
+		SpawnEffect("Wm_ob_keyget01_c", 0, &tempPos, &nullRot, &oneVec);
+	}
+
+	if (timer > 420) { return true; }
+	return false;
+}
+
+
 void OutroSetup(daBoss *actor) {
 	actor->removeMyActivePhysics();
 
@@ -152,6 +177,14 @@ void BossGoalForAllPlayers() {
 		daPlBase_c *player = GetPlayerOrYoshi(i);
 		if (player)
 			player->setAnimePlayStandardType(2);
+	}
+}
+
+void FinalBossGoalForAllPlayers() {
+	for (int i = 0; i < 4; i++) {
+		daPlBase_c *player = GetPlayerOrYoshi(i);
+		if (player)
+			player->setAnimePlayStandardType(5);
 	}
 }
 

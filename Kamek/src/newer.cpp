@@ -67,7 +67,7 @@ void getNewerLevelNumberString(int world, int level, wchar_t *dest) {
 		// To insert a picturefont character:
 		// \x0B\x01YY\xZZZZ
 		// YY is the character code, ZZZZ is ignored
-		L"A", // 20, alternate
+		L"F", // 20, final
 		L"\x0B\x0148\xBEEF", // 21, tower
 		L"\x0B\x0148\xBEEF" L"2", // 22, tower 2
 		L"\x0B\x012E\xBEEF", // 23, castle
@@ -75,7 +75,7 @@ void getNewerLevelNumberString(int world, int level, wchar_t *dest) {
 		L"\x0B\x013D\xBEEF", // 25, final castle
 		L"\x0B\x014D\xBEEF", // 26, train
 		L"\x0B\x0132\xBEEF", // 27, airship
-		L"Palace", // 28, switch palace
+		L"Bonus", // 28, Bonus levels
 		L"\x0B\x0147\xBEEF", // 29, yoshi's house
 		L"\x0B\x014E\xBEEF" L"1", // 30, key 1
 		L"\x0B\x014E\xBEEF" L"2", // 31, key 2

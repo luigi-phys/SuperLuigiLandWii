@@ -425,42 +425,42 @@ void dWMShop_c::endState_HideWait() {
 // Possible 8 coin combos =  1,1,2,3,3  /  1,2,2,3,3  /  1,2,3,3,3  /  2,2,2,3,3  /  2,2,3,3,3  /  1,3,3,3,3  /  2,3,3,3,3  /  3,3,3,3,3
 
 const dWMShop_c::ItemTypes dWMShop_c::Inventory[10][12] = { 
-	{ // Yoshi's Island
+	{ // Koopa Countryside
 		MUSHROOM, FIRE_FLOWER, ICE_FLOWER, PROPELLER,
 		FIRE_FLOWER, ICE_FLOWER, FIRE_FLOWER,
 		MUSHROOM, MUSHROOM, ONE_UP, PROPELLER, PROPELLER
 	},
-	{ // Desert
+	{ // Caliginous Caverns
 		MUSHROOM, FIRE_FLOWER, ICE_FLOWER, PROPELLER,
 		FIRE_FLOWER, STARMAN, FIRE_FLOWER,
 		MUSHROOM, FIRE_FLOWER, FIRE_FLOWER, PROPELLER, PROPELLER
 	},
-	{ // Mountain
+	{ // Basalt Bluffs
 		MUSHROOM, FIRE_FLOWER, MINI_SHROOM, PROPELLER,
 		MUSHROOM, MINI_SHROOM, PROPELLER,
 		MUSHROOM, MINI_SHROOM, PROPELLER, PROPELLER, HAMMER
 	},
-	{ // Japan
+	{ // Nothing, used to be Sakura Village
 		MUSHROOM, FIRE_FLOWER, ONE_UP, HAMMER,
 		ONE_UP, ONE_UP, ONE_UP,
 		PROPELLER, ICE_FLOWER, ONE_UP, FIRE_FLOWER, PROPELLER
 	},
-	{ // FreezeFlame
+	{ // Nothing, used to be FreezeFlame
 		MUSHROOM, FIRE_FLOWER, ICE_FLOWER, PENGUIN,
 		ICE_FLOWER, PENGUIN, ICE_FLOWER,
 		ICE_FLOWER, PENGUIN, PENGUIN, PENGUIN, ICE_FLOWER
 	},
-	{ // Ghost
+	{ // Nothing, used to be Pumpkin Boneyard
 		MUSHROOM, FIRE_FLOWER, STARMAN, PROPELLER,
 		MINI_SHROOM, PROPELLER, MINI_SHROOM,
 		PROPELLER, PROPELLER, MUSHROOM, PROPELLER, PROPELLER
 	},
-	{ // Space
+	{ // Nothing, used to be Space
 		MUSHROOM, STARMAN, ONE_UP, HAMMER,
 		STARMAN, STARMAN, STARMAN,
 		HAMMER, HAMMER, ONE_UP, HAMMER, HAMMER
 	},
-	{ // Koopa
+	{ // Nothing, used to be Koopa Planet
 		MUSHROOM, ONE_UP, PROPELLER, HAMMER,
 		HAMMER, PROPELLER, HAMMER,
 		PROPELLER, HAMMER, PROPELLER, HAMMER, PROPELLER
@@ -470,7 +470,7 @@ const dWMShop_c::ItemTypes dWMShop_c::Inventory[10][12] = {
 		MUSHROOM, MUSHROOM, MUSHROOM,
 		MUSHROOM, MUSHROOM, MUSHROOM, MUSHROOM, MUSHROOM
 	},
-	{ // Goldwood
+	{ // Nothing, used to be Goldwood
 		MUSHROOM, FIRE_FLOWER, ONE_UP, PENGUIN,
 		FIRE_FLOWER, PROPELLER, FIRE_FLOWER,
 		FIRE_FLOWER, FIRE_FLOWER, STARMAN, FIRE_FLOWER, FIRE_FLOWER
@@ -538,9 +538,23 @@ void dWMShop_c::loadInfo() {
 	rightCol.colourise(save->hudHintH, save->hudHintS, save->hudHintL);
 
 	// find out the shop name
-	dScript::Res_c *bmg = GetBMG();
-	Newer_WriteBMGToTextBox(Title, bmg, 8000+shopKind+1, 99, 0);
-	Newer_WriteBMGToTextBox(TitleShadow, bmg, 8000+shopKind+1, 99, 0);
+	dLevelInfo_c::entry_s *shopNameEntry =
+		dLevelInfo_c::s_info.searchBySlot(shopKind, 98);
+
+	wchar_t shopName[100];
+	// TODO: refactor this a bit
+	const char *sourceName = dLevelInfo_c::s_info.getNameForLevel(shopNameEntry);
+	int charCount = 0;
+	
+	while (*sourceName != 0 && charCount < 99) {
+		shopName[charCount] = *sourceName;
+		sourceName++;
+		charCount++;
+	}
+	shopName[charCount] = 0;
+
+	Title->SetString(shopName);
+	TitleShadow->SetString(shopName);
 
 	// load the coin count
 	int scCount = getUnspentStarCoinCount();
@@ -601,7 +615,7 @@ void dWMShop_c::buyItem(int item) {
 			int id = Player_ID[i];
 			Player_Lives[id] += appliedItems[(int)ONE_UP];
 			if (Player_Lives[id] > 99)
-				Player_Lives[id] = 99;
+				Player_Lives[id] = 99; //I wonder what happens if you force the game to mak the player have >99 lives actually
 		}
 	}
 

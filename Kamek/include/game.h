@@ -92,9 +92,9 @@ class GMgr8 {
 		virtual ~GMgr8();
 
 		int _4;
-		float _8, _C;
+		float checkpointEntranceXPos, checkpointEntranceYPos;
 		u32 _10, _14;
-		u8 _18, _19, _1A, _1B, _1C;
+		u8 checkpointWorldID, checkpointLevelID, _1A, checkpointEntranceID, _1C;
 		u32 _20, _24, _28, _2C, _30;
 };
 
@@ -506,6 +506,7 @@ public:
 
 	void demoControlAllPlayers();
 	void disableDemoControl(bool uselessVar);
+	void activateStandardAnim(int id);
 };
 
 
@@ -2711,6 +2712,57 @@ class dWaterManager_c {
 		void setGeometry(VEC3 *pos, float width, float height, int blockID);
 };
 
+class PTMF {
+public:
+	u32 classOffset;
+	u32 vtableOffset;
+	u32 funcOrVtableLocation;
+};
+
+class BgGmAc {
+public:
+	VEC3 field_0;
+	float field_C;
+	float field_10;
+	u8 autoscrollPathID;
+	u8 autoscrollUnk11;
+	u8 autoscrollAtEndRelated;
+	u8 autoscrollAtEnd;
+	u8 autoscrollMode;
+	u8 field_19;
+	u8 isAutoscrolling;
+	u8 _1B;
+};
+
+class dBgTexMng_c : public m3d::scnLeaf_c {
+public:
+	mAllocator_c allocator;
+	u32 texture;
+	u32 field_28;
+	u32 field_2C;
+	u8 field_30;
+	u8 field_31;
+	u8 field_32;
+	u8 field_33;
+	u32 firstAnimatedTile;
+	float field_38;
+	float field_3C;
+	float field_40;
+	u8 _44;
+	u8 _45;
+	u8 _46;
+	u8 _47;
+	u8 _48;
+	u8 _49;
+	u8 _4A;
+	u8 _4B;
+	u8 _4C;
+	u8 _4D;
+	u8 _4E;
+	u8 _4F;
+	u32 field_50;
+};
+
 class BgGmBase : public dBase_c {
 public:
 	struct something_s {
@@ -2748,6 +2800,317 @@ public:
 	beets_s beets1[100];
 	beets_s beets2[100];
 	// TODO, a lot
+	/*Here's a big mess RSM done*/
+	u8 _8FDE0;
+	u8 _8FDE1;
+	u8 _8FDE2;
+	u8 _8FDE3;
+	u8 _8FDE4;
+	u8 _8FDE5;
+	u8 _8FDE6;
+	u8 _8FDE7;
+	u8 _8FDE8;
+	u8 _8FDE9;
+	u8 _8FDEA;
+	u8 _8FDEB;
+	u8 _8FDEC;
+	u8 _8FDED;
+	u8 _8FDEE;
+	u8 _8FDEF;
+	u8 _8FDF0;
+	u8 _8FDF1;
+	u8 _8FDF2;
+	u8 _8FDF3;
+	u8 _8FDF4;
+	u8 _8FDF5;
+	u8 _8FDF6;
+	u8 _8FDF7;
+	u8 _8FDF8;
+	u8 _8FDF9;
+	u8 _8FDFA;
+	u8 _8FDFB;
+	u8 _8FDFC;
+	u8 _8FDFD;
+	u8 _8FDFE;
+	u8 _8FDFF;
+	u8 _8FE00;
+	u8 _8FE01;
+	u8 _8FE02;
+	u8 _8FE03;
+	u8 _8FE04;
+	u8 _8FE05;
+	u8 _8FE06;
+	u8 _8FE07;
+	u8 _8FE08;
+	u8 _8FE09;
+	u8 _8FE0A;
+	u8 _8FE0B;
+	u8 _8FE0C;
+	u8 _8FE0D;
+	u8 _8FE0E;
+	u8 _8FE0F;
+	u8 _8FE10;
+	u8 _8FE11;
+	u8 _8FE12;
+	u8 _8FE13;
+	u8 _8FE14;
+	u8 _8FE15;
+	u8 _8FE16;
+	u8 _8FE17;
+	float usedInPlayerPosDeltaManips_8FE18;
+	u8 _8FE1C;
+	u8 _8FE1D;
+	u8 _8FE1E;
+	u8 _8FE1F;
+	u8 _8FE20;
+	u8 _8FE21;
+	u8 _8FE22;
+	u8 _8FE23;
+	u8 _8FE24;
+	u8 _8FE25;
+	u8 _8FE26;
+	u8 _8FE27;
+	u8 _8FE28;
+	u8 _8FE29;
+	u8 _8FE2A;
+	u8 _8FE2B;
+	u8 _8FE2C;
+	u8 _8FE2D;
+	u8 _8FE2E;
+	u8 _8FE2F;
+	u8 _8FE30;
+	u8 _8FE31;
+	u8 _8FE32;
+	u8 _8FE33;
+	u8 _8FE34;
+	u8 _8FE35;
+	u8 _8FE36;
+	u8 _8FE37;
+	u8 _8FE38;
+	u8 _8FE39;
+	u8 _8FE3A;
+	u8 _8FE3B;
+	u8 _8FE3C;
+	u8 _8FE3D;
+	u8 _8FE3E;
+	u8 _8FE3F;
+	u8 _8FE40;
+	u8 _8FE41;
+	u8 _8FE42;
+	u8 _8FE43;
+	float usedInPlayerPosDeltaManips_8FE44;
+	float hasStuffAddedFor8_7_also_usedWithBoundingValues;
+	float usedInPlayerPosDeltaManips_8FE4C;
+	float usedInPlayerPosDeltaManips_8FE50;
+	float effectiveUpperBound;
+	float effectiveLowerBound;
+	float field_8FE5C;
+	float offsetForBoundings;
+	float zoneLeft;
+	float zoneRight;
+	float zoneTop;
+	float zoneBottom;
+	float field_8FE74;
+	float zoomedWidth;
+	float zoomedHeight;
+	float previousZoomedWidth;
+	float previousZoomedHeight;
+	float autoscroll_left;
+	float autoscroll_top;
+	float field_8FE90;
+	float field_8FE94;
+	float field_8FE98;
+	float deltaMultiplier;
+	float zoneWidthAfterManipulations;
+	float zoneHeight;
+	float previousScreenLeft;
+	float previousScreenTop;
+	float field_8FEB0;
+	float field_8FEB4;
+	float field_8FEB8;
+	float field_8FEBC;
+	float field_8FEC0;
+	float liquidHeightMaybe;
+	float field_8FEC8;
+	float wavyLavaHeights[80];
+	float zoomDivisor;
+	float field_90010;
+	float copyOfZoomDivisor_setAt801559D4;
+	float field_90018;
+	float cameraPanAmount;
+	u8 section12_id;
+	u8 isUsingSection12;
+	u8 field_90022;
+	u8 field_90023;
+	u8 isNotFollowingAnyPlayer;
+	u8 a_player_id;
+	u8 _90026;
+	u8 _90027;
+	float valueCalculatedBasedOnZoneAspectRatio;
+	u8 liquidTypeMaybe;
+	u8 _9002D;
+	u8 _9002E;
+	u8 _9002F;
+	float zoneLeft_copy1;
+	float zoneRight_copy1;
+	float zoneTop_copy1;
+	float zoneBottom_copy1;
+	float zoneLeft_copy2;
+	float zoneRight_copy2;
+	float zoneTop_copy2;
+	float zoneBottom_copy2;
+	float zoneLeft_copy3;
+	float zoneRight_copy3;
+	float zoneTop_copy3;
+	float zoneBottom_copy3;
+	float yOfInitialEntrance;
+	u32 field_90064;
+	float field_90068;
+	float field_9006C;
+	float field_90070;
+	float field_90074;
+	u8 field_90078;
+	u8 valueFromMbBias_1;
+	u8 valueFromMbBias_2;
+	u8 _9007B;
+	PTMF field_9007C;
+	float field_90088;
+	u32 field_9008C;
+	float field_90090;
+	u8 field_90094;
+	u8 _90095;
+	u8 _90096;
+	u8 _90097;
+	float zoomLevel;
+	float field_9009C;
+	float field_900A0;
+	float field_900A4;
+	float field_900A8;
+	BgGmAc autoscrollInfoMaybe[2];
+	u8 _900E4;
+	u8 _900E5;
+	u8 _900E6;
+	u8 _900E7;
+	u8 _900E8;
+	u8 _900E9;
+	u8 _900EA;
+	u8 _900EB;
+	u32 currentAutoscrollNode;
+	u32 usedByAutoscroll_900F0;
+	float usedByAutoscroll_900F4;
+	u16 autoscrollMovementAngleOne;
+	u16 autoscrollMovementAngleTwo;
+	u8 usedByAutoscroll_900FC;
+	u8 usedByAutoscroll_900FD;
+	u8 cameraScrollMode;
+	u8 cameraZoomMode;
+	u8 zoneField10;
+	u8 boundingID;
+	u8 mpBias;
+	u8 mpBiasCopy;
+	float field_90104;
+	float field_90108;
+	float field_9010C;
+	float relatedToObjCenter;
+	u8 manualZoomLevel;
+	u8 field_90115;
+	u8 field_90116;
+	u8 field_90117;
+	u8 field_90118;
+	u8 _90119;
+	u8 _9011A;
+	u8 _9011B;
+	float field_9011C;
+	float field_90120;
+	u8 field_90124;
+	u8 _90125;
+	u16 field_90126;
+	float field_90128;
+	float field_9012C;
+	float splashX[20];
+	float splashY[20];
+	u8 splashSettings[20];
+	u8 splashEnabled[20];
+	float wutX[200];
+	float wutY[200];
+	u8 wutActive[200];
+	u8 wutByte[200];
+	u16 correctMazesSoFar;
+	u8 field_909CA;
+	u8 setByEnZoomExecute;
+	u8 field_909CC;
+	u8 _909CD;
+	u8 _909CE;
+	u8 _909CF;
+	float field_909D0;
+	float field_909D4;
+	float x1_calc_from_entrance_c;
+	float x2_calc_from_entrance_c;
+	float y1_calc_from_entrance_c;
+	float y2_calc_from_entrance_c;
+	u32 field_909E8;
+	u32 field_909EC;
+	u32 field_909F0;
+	u32 field_909F4;
+	u8 _909F8;
+	u8 _909F9;
+	u8 _909FA;
+	u8 _909FB;
+	u8 _909FC;
+	u8 _909FD;
+	u8 _909FE;
+	u8 _909FF;
+	u8 _90A00;
+	u8 _90A01;
+	u8 _90A02;
+	u8 _90A03;
+	u8 _90A04;
+	u8 _90A05;
+	u8 _90A06;
+	u8 _90A07;
+	u8 _90A08;
+	u8 _90A09;
+	u8 _90A0A;
+	u8 _90A0B;
+	float x1_calc_from_entrance;
+	float x2_calc_from_entrance;
+	float y1_calc_from_entrance;
+	float y2_calc_from_entrance;
+	u32 field_90A1C;
+	u32 field_90A20;
+	u32 field_90A24;
+	u32 field_90A28;
+	u8 _90A2C;
+	u8 _90A2D;
+	u8 _90A2E;
+	u8 _90A2F;
+	u8 _90A30;
+	u8 _90A31;
+	u8 _90A32;
+	u8 _90A33;
+	u8 _90A34;
+	u8 _90A35;
+	u8 _90A36;
+	u8 _90A37;
+	u8 _90A38;
+	u8 _90A39;
+	u8 _90A3A;
+	u8 _90A3B;
+	u8 _90A3C;
+	u8 _90A3D;
+	u8 _90A3E;
+	u8 _90A3F;
+	u32 tileLayers[3];
+	u32 spotlightMask;
+	dBgTexMng_c bgTexMng;
+	u8 _90AA4;
+	u8 _90AA5;
+	u8 _90AA6;
+	u8 _90AA7;
+	u8 redSwitchFlag;
+
+
+	/*Actual things*/
 
 	u16 *getPointerToTile(int x, int y, int layer, int *pBlockNum = 0, bool unused = false);
 
@@ -2755,6 +3118,8 @@ public:
 	void placeTile(u16 x, u16 y, int layer, int tile);
 
 	void makeSplash(float x, float y, int type); // 80078410
+
+	void disableAutoscroll(); //8007A6B0
 };
 
 
@@ -2764,6 +3129,9 @@ public:
 	static dBgGm_c *instance;
 
 	TileRenderer::List *getTileRendererList(int index);
+
+	void executeAutoscroll();
+	void autoscrollShit();
 };
 
 

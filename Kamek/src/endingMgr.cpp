@@ -232,7 +232,7 @@ void dEndingMgr_c::executeState_ThanksPeach() {
 	}
 
 	if (peach->stage == 1 && peachSt == &peach->StateID_Open) {
-		peach->doStateChange(&peach->StateID_Rescue);
+		peach->doStateChange(&peach->StateID_Thank);
 	}
 
 	if (peach->stage == 3 && peachSt == &peach->StateID_Rescue) {
@@ -254,33 +254,33 @@ void dEndingMgr_c::executeState_ThanksPeach() {
 				players[3]->moveInDirection(&target, &speed);
 			} else if (timer == 90) {
 				peach->stage = 0;
-				players[3]->setAnimePlayWithAnimID(dm_escort);
+				// players[3]->setAnimePlayWithAnimID(dm_escort);
 			}
 		} else if (peach->stage == 7) {
 			// All the players are glad
 			timer = 0;
 			peach->stage = 9;
-			for (int i = 0; i < 4; i++) {
-				if (dAcPy_c *player = players[i]) {
-					OSReport("Going to dmglad\n");
-					OSReport("Player %d states: %s and %s\n", i, player->states2.getCurrentState()->getName(), player->demoStates.getCurrentState()->getName());
-					player->setAnimePlayWithAnimID(dm_glad);
+			// for (int i = 0; i < 4; i++) {
+			// 	if (dAcPy_c *player = players[i]) {
+			// 		OSReport("Going to dmglad\n");
+			// 		OSReport("Player %d states: %s and %s\n", i, player->states2.getCurrentState()->getName(), player->demoStates.getCurrentState()->getName());
+			// 		player->setAnimePlayWithAnimID(dm_glad);
 
-					static const int vocs[4] = {
-						SE_VOC_MA_SAVE_PRINCESS,
-						SE_VOC_LU_SAVE_PRINCESS,
-						SE_VOC_KO_SAVE_PRINCESS,
-						SE_VOC_KO2_SAVE_PRINCESS
-					};
-					dPlayerModelHandler_c *pmh = (dPlayerModelHandler_c*)(((u32)player) + 0x2A60);
-					int voc = vocs[pmh->mdlClass->player_id_2];
-					nw4r::snd::SoundHandle handle;
-					PlaySoundWithFunctionB4(SoundRelatedClass, &handle, voc, 1);
+			// 		static const int vocs[4] = {
+			// 			SE_VOC_MA_SAVE_PRINCESS,
+			// 			SE_VOC_LU_SAVE_PRINCESS,
+			// 			SE_VOC_KO_SAVE_PRINCESS,
+			// 			SE_VOC_KO2_SAVE_PRINCESS
+			// 		};
+			// 		dPlayerModelHandler_c *pmh = (dPlayerModelHandler_c*)(((u32)player) + 0x2A60);
+			// 		int voc = vocs[pmh->mdlClass->player_id_2];
+			// 		nw4r::snd::SoundHandle handle;
+			// 		PlaySoundWithFunctionB4(SoundRelatedClass, &handle, voc, 1);
 
-					int powerup = *((u32*)( 0x1090 + ((u8*)player) ));
-					handle.SetPitch(powerup == 3 ? 1.5f : 1.0f);
-				}
-			}
+			// 		int powerup = *((u32*)( 0x1090 + ((u8*)player) ));
+			// 		handle.SetPitch(powerup == 3 ? 1.5f : 1.0f);
+			// 	}
+			// }
 		} else if (peach->stage == 9) {
 			timer++;
 			if (timer == 90) {

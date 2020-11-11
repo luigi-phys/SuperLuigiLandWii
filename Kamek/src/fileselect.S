@@ -327,14 +327,14 @@ WarpZoneName:
 
 .align 4
 DefaultSavefileInfoData:
-.string "Yoshi's Island" #15
+.string "Koopa Countryside" #18
 .byte 0,0,0,0,0,0,0,0,0,0,0 # 11
-.byte 0,0,0,0,0,0 # 6
-.long 0xFFFF99FF,0x1FB423FF
-.long 0x173714FF,0x3C9135FF
-.long 0xFFFF99FF,0x1FB423FF
-.short 0x75
-.byte 0x2E,0xB
+.byte 0,0,0 # 3
+.long 0xFFFF99FF,0xFF9400FF #FSText top-bottom
+.long 0xB73D00FF,0xFFAA00FF #FSGradient top-bottom
+.long 0xFFFF99FF,0xFF7B00FF #WMText top-bottom
+.short 0x2E    #HUD Hue
+.byte 0x2E,0xB #HUD Saturation-Lightness
 .byte 1,1
 .byte 0,10
 

@@ -1,5 +1,6 @@
 #include <game.h>
 #include <dCourse.h>
+#include <sfx.h>
 
 class daEnMagicPlatform_c : public dEn_c {
 	public:
@@ -27,6 +28,9 @@ class daEnMagicPlatform_c : public dEn_c {
 		u8 moveDelay, currentMoveDelay;
 
 		bool doesMoveInfinitely;
+
+		bool doTheIronEffect;
+		bool dontPlayThisSongAgain;
 
 		float moveMin, moveMax, moveDelta, moveBaseDelta;
 		float *moveTarget;
@@ -134,17 +138,23 @@ static bool PhysCB6(daEnMagicPlatform_c *one, dStageActor_c *two, bool unkMaybeN
 }
 
 int daEnMagicPlatform_c::onCreate() {
-	rectID = settings & 0xFF;
+	rectID = settings & 0xFF; //Nybbles 11-12
 
-	moveSpeed = (settings & 0xF00) >> 8;
-	moveDirection = (settings & 0x3000) >> 12;
-	moveLength = ((settings & 0xF0000) >> 16) + 1;
+	moveSpeed = (settings & 0xF00) >> 8; //Nybble 10
+	moveDirection = (settings & 0x3000) >> 12; //Bits 35-36 
+	moveLength = ((settings & 0xF0000) >> 16) + 1; //Nybble 8
 
-	moveDelay = ((settings & 0xF00000) >> 20) * 6;
+	//moveDelay = ((settings & 0xF00000) >> 20) * 6; //Nybble 7, Looks like a movement delay but it's not in the spritedata.xml so it's maybe unused, so commenting it cuz i need nybble 7 for something else
+	moveDelay = 0;
 
-	collisionType = (CollisionType)((settings & 0xF000000) >> 24);
+	collisionType = (CollisionType)((settings & 0xF000000) >> 24); //Nybble 6
 
-	doesMoveInfinitely = (settings & 0x10000000);
+	doesMoveInfinitely = (settings & 0x10000000); //Bit 20
+
+	doTheIronEffect = ((settings >> 20) & 0xF); //Nybble 7, added for SLLW because Ʋєккα don't want to add 868461687464 SFX Spawners, which i totally understand
+	dontPlayThisSongAgain = false; //Added for SLLW
+
+	// OSReport("My settings are: LID%d, SETS%d\n", rectID, this->settings);
 
 	if (settings & 0xE0000000) {
 		int putItBehind = settings >> 29;
@@ -281,6 +291,9 @@ void daEnMagicPlatform_c::setupMovement() {
 }
 
 void daEnMagicPlatform_c::handleMovement() {
+	if(doTheIronEffect) { //Hacky thing to make it accelerate
+		moveBaseDelta += ((moveBaseDelta < 0) ? -0.0005 : 0.0005);
+	}
 	if (spriteFlagNum > 0) {
 		// Do event checks
 		bool flagOn = ((dFlagMgr_c::instance->flags & spriteFlagMask) != 0);
@@ -344,6 +357,15 @@ void daEnMagicPlatform_c::handleMovement() {
 			// Otherwise, reverse
 			moveDelta = -moveDelta;
 			currentMoveDelay = moveDelay;
+		}
+		if (doTheIronEffect && //Setting for the iron effect enabled
+			!dontPlayThisSongAgain && //The sound wasn't already played
+			(spriteFlagNum > 0) && //There's a triggering event ID
+			((dFlagMgr_c::instance->flags & spriteFlagMask) != 0) //The triggering event ID was triggered
+			) { //Then play the metal box landing sound at the end of the movement
+			nw4r::snd::SoundHandle ironHandle;
+			PlaySoundWithFunctionB4(SoundRelatedClass, &ironHandle, SE_OBJ_METAL_BOX_LAND, 1);
+			dontPlayThisSongAgain = true;
 		}
 	}
 }

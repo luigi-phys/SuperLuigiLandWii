@@ -8,6 +8,7 @@
 #include <stage.h>
 
 extern "C" void PlaySoundWithFunctionB4(void *spc, nw4r::snd::SoundHandle *handle, int id, int unk);
+extern bool enableDebugMode;
 
 u8 MaybeFinishingLevel[2] = {0xFF,0xFF};
 u8 LastLevelPlayed[2] = {0xFF,0xFF};
@@ -152,9 +153,6 @@ void dWMPathManager_c::setup() {
 		else
 			waitAtStart = 1;
 
-		if (wm->isFirstPlay)
-			waitAtStart = 280;
-
 		SpammyReport("saved path node: %d\n", save->current_path_node);
 		if (save->current_path_node >= pathLayer->nodeCount) {
 			SpammyReport("out of bounds (%d), using node 0\n", pathLayer->nodeCount);
@@ -178,8 +176,8 @@ void dWMPathManager_c::setup() {
 			findW = 8;
 			findL = 5;
 		} else if (wm->isEndingScene) {
-			findW = 80;
-			findL = 80;
+			findW = 4;
+			findL = 1;
 			storeIt = false;
 		}
 		if (findW > -1) {
@@ -1006,6 +1004,21 @@ void dWMPathManager_c::execute() {
 			}
 		} else if (nowPressed & WPAD_TWO) {
 			activatePoint();
+		} else if (enableDebugMode && (nowPressed & WPAD_B)) { //Reset Level
+			OSReport("Disabled Path Bypassing and reset the level\n");
+			SaveBlock *save = GetSaveFile()->GetBlock(-1);
+			int w = currentNode->levelNumber[0] - 1;
+			int l = currentNode->levelNumber[1] - 1;
+			save->completions[w][l] = 0;
+			enableBypass = false;
+			activatePoint();
+		} else if (enableDebugMode && (nowPressed & WPAD_A)) { //Clear Level
+			OSReport("Enabled Path Bypassing and cleared level\n");
+			SaveBlock *save = GetSaveFile()->GetBlock(-1);
+			int w = currentNode->levelNumber[0] - 1;
+			int l = currentNode->levelNumber[1] - 1;
+			save->completions[w][l] = 535;
+			enableBypass = true;
 		}
 	}
 }
@@ -1014,7 +1027,7 @@ void dWMPathManager_c::execute() {
 void dWMPathManager_c::startMovementTo(dKPPath_s *path) {
 	SpammyReport("moving to path %p [%d,%d to %d,%d]\n", path, path->start->x, path->start->y, path->end->x, path->end->y);
 
-	if (!path->isAvailable) { return; }
+	if (!path->isAvailable && !enableBypass) { return; }
 	if (currentNode && dWMHud_c::instance)
 		dWMHud_c::instance->leftNode();
 

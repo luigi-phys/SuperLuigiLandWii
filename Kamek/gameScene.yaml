@@ -1,0 +1,26 @@
+---
+
+
+source_files: [../src/gameScene.cpp]
+hooks:
+
+  - name: GDisplay_doWait
+    type: add_func_pointer
+    src_addr_pal: 0x80327A58
+    target_func: 'dGameDisplay_c::doWaitCheck()'
+
+  # - name: CoinLimitChange
+  #   type: patch
+  #   addr_pal: 0x80427C04
+  #   data: '000003E7' #default is 0x63 = 99
+
+  # - name: CoinCharacterLimitChange
+  #   type: patch
+  #   addr_pal: 0x80159AD8
+  #   data: '3882ab38' #default is 3882ab34 -> 2
+
+  - name: CoinHex
+    type: branch_insn
+    branch_type: bl
+    src_addr_pal: 0x80159AE8
+    target_func: 'dGameDisplay_c::doHexCoin()'

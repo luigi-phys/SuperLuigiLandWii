@@ -35,7 +35,7 @@ class dWMPathManager_c {
 		bool canUseExit(dKPPath_s *path) {
 			OSReport("Checking usability of path %p\n", path);
 			if (path) OSReport("Availability: %d\n", path->isAvailable);
-			return (path != 0) && (path->isAvailable);
+			return (path != 0) && ((path->isAvailable) || enableBypass);
 		}
 
 		void startMovementTo(dKPPath_s *path);
@@ -47,6 +47,8 @@ class dWMPathManager_c {
 
 		dKPLayer_s *pathLayer;
 
+		bool enableBypass;
+		
 		bool firstPathDone;
 		bool isMoving;
 		dKPNode_s *currentNode;

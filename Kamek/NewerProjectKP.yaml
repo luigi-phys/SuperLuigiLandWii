@@ -11,7 +11,7 @@ modules:
   - processed/chestnut.yaml
   - processed/flipblock.yaml
   - processed/fileselect.yaml
-  - processed/magicplatform.yaml
+  - processed/magicplatform.yaml #Added Hacky SFX for Ʋєккα
   - processed/cutScene.yaml
   - processed/bonepiece.yaml
   - processed/bugfixes.yaml
@@ -26,7 +26,10 @@ modules:
   - processed/firelaser.yaml
   - processed/spritetex.yaml
 #  - processed/gakenoko.yaml
-  - processed/poweruphax.yaml
+  - processed/gameScene.yaml #Debug mode (Haha now Mullkaw-senpai can't kill me with his impossible levels !)
+  - processed/bossKamek.yaml #Everything about Kamek is here
+  - processed/quickrestart.yaml #The quick restart, of course
+  - processed/poweruphax.yaml #I want sooo much to hide things in here, but people would mock me, so this file is unchanged :c
   - processed/heapbar.yaml
   - processed/randtiles.yaml
   - processed/objkinoko.yaml

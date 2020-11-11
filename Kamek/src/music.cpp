@@ -2,6 +2,8 @@
 #include <sfx.h>
 #include "music.h"
 
+bool isTrailerMode;
+
 struct HijackedStream {
 	//const char *original;
 	//const char *originalFast;
@@ -21,53 +23,53 @@ struct Hijacker {
 
 
 const char* SongNameList [] = {
-	"AIRSHIP",
+	"HEADLONG_HOLD",
 	"BOSS_TOWER",
 	"MENU",
-	"UNDERWATER",
-	"ATHLETIC",
-	"CASTLE",
-	"MAIN",
-	"MOUNTAIN",
-	"TOWER",
-	"UNDERGROUND",
-	"DESERT",
-	"FIRE",
-	"FOREST",
-	"FREEZEFLAME",
+	"WAYSIDE_UW",
+	"CHALLENGE",
+	"WINDY_RUIN_UG",
+	"GOOMBA_GROTTO",
+	"CLIFFSIDE",
+	"BOSS_ROY",
+	"GOOMBA_GRO_UG",
+	"WINDY_RUINS1",
+	"LAVA_LAIR",
+	"SHFTNG_SWMPLN",
+	"ICE_FLOE_FERR",
 	"JAPAN",
 	"PUMPKIN",
-	"SEWER",
-	"SPACE",
+	"EERIE_EXCURS",
+	"BOSS_WENDY",
 	"BOWSER",
 	"BONUS",	
 	"AMBUSH",	
 	"BRIDGE_DRUMS",	
 	"SNOW2",	
-	"MINIMEGA",	
-	"CLIFFS",
+	"BOSS_MORTON",	
+	"SUNNY_ASCENT",
 	"AUTUMN",
-	"CRYSTALCAVES",
-	"GHOST_HOUSE",
-	"GRAVEYARD",
-	"JUNGLE",
-	"TROPICAL",
-	"SKY_CITY",
-	"SNOW",
-	"STAR_HAVEN",
+	"WYSIDE_WALLOW",
+	"LWLGHT_LBRNTH",
+	"GHASTLY_GLADE",
+	"JUNGLE_SWING",
+	"BOSS_IGGY",
+	"BOSS_LARRY",
+	"ROCKSLIDE_RUN",
+	"FINAL_KAMEK",
 	"SINGALONG",
 	"FACTORY",
-	"TANK",
-	"TRAIN",
+	"BOSS_LUDWIG",
+	"CHNLNK_CHMBER",
 	"YOSHIHOUSE",
-	"FACTORYB",
-	"CAVERN",
-	"SAND",
-	"SHYGUY",
+	"PRLOUS_PSSAGE",
+	"BOMB_BASEMENT",
+	"WINDY_RUINS2",
+	"BOSS_LEMMY",
 	"MINIGAME",
 	"BONUS_AREA",
 	"CHALLENGE",
-	"BOWSER_CASTLE",
+	"TERMINA_TOWER",
 	"",
 	"",
 	"",
@@ -117,6 +119,10 @@ void FixFilesize(u32 streamNameOffset);
 
 u8 hijackMusicWithSongName(const char *songName, int themeID, bool hasFast, int channelCount, int trackCount, int *wantRealStreamID) {
 	Hijacker *hj = &Hijackers[channelCount==4?1:0];
+
+	if(isTrailerMode) {
+		songName = "NOMUSICFORU";
+	}
 
 	// do we already have this theme in this slot?
 	// if so, don't switch streams
@@ -187,6 +193,7 @@ extern "C" u8 after_course_getMusicForZone(u8 realThemeID) {
 		return realThemeID;
 
 	bool usesDrums = (realThemeID >= 200);
+	// OSReport("isTrailerMode = %d\n", isTrailerMode);
 	return hijackMusicWithSongName(SongNameList[realThemeID-100], realThemeID, true, usesDrums?4:2, usesDrums?2:1, 0);
 }
 

@@ -239,7 +239,6 @@ void dWMStarCoin_c::loadInfo() {
 }
 
 void dWMStarCoin_c::loadSectionInfo() {
-	dScript::Res_c *bmg = GetBMG();
 	dLevelInfo_c::entry_s *visibleLevels[COLUMN_COUNT][ROW_COUNT];
 
 	// reset everything... everything
@@ -263,9 +262,9 @@ void dWMStarCoin_c::loadSectionInfo() {
 	SaveBlock *save = GetSaveFile()->GetBlock(-1);
 	dLevelInfo_c *linfo = &dLevelInfo_c::s_info;
 
-	const wchar_t *names[COLUMN_COUNT];
+	dLevelInfo_c::entry_s *names[COLUMN_COUNT];
 	for (int i = 0; i < COLUMN_COUNT; i++)
-		names[i] = bmg->findStringForMessageID(8000+currentSection, 100+i);
+		names[i] = linfo->searchByDisplayNum(currentSection, 100+i);
 
 	bool useSubworlds = (COLUMN_COUNT > 1) && names[1];
 
@@ -322,10 +321,9 @@ void dWMStarCoin_c::loadSectionInfo() {
 		names[1] = 0;
 
 	// work out the names
-	LeftTitle->SetString(names[0]);
-
+	WriteAsciiToTextBox(LeftTitle, linfo->getNameForLevel(names[0]));
 	if (names[1])
-		RightTitle->SetString(names[1]);
+		WriteAsciiToTextBox(RightTitle, linfo->getNameForLevel(names[1]));
 	RightTitle->SetVisible(names[1] != 0);
 
 	// load all level info
@@ -353,7 +351,7 @@ void dWMStarCoin_c::loadSectionInfo() {
 			}
 
 			LevelName[col][row]->SetVisible(true);
-			Newer_WriteBMGToTextBox(LevelName[col][row], bmg, 8000+level->worldSlot+1, level->levelSlot+1, 0);
+			WriteAsciiToTextBox(LevelName[col][row], linfo->getNameForLevel(level));
 		}
 	}
 
@@ -376,7 +374,8 @@ static const int secretCodeButtons = WPAD_UP|WPAD_DOWN|WPAD_LEFT|WPAD_RIGHT|WPAD
 static int secretCodeIndex = 0;
 static int minusCount = 0;
 extern bool enableHardMode;
-extern bool enableDebugMode;
+extern bool wasHardModeReallyEnabled;
+bool enableDebugMode;
 extern u8 isReplayEnabled;
 
 void dWMStarCoin_c::beginState_ShowWait() {
@@ -447,13 +446,12 @@ void dWMStarCoin_c::executeState_Wait() {
 
 	if ((GetActiveRemocon()->heldButtons == 0xc10) && (nowPressed & 0xc10)) { // A, B, and Plus
 
-		const int lineCountOn = 9, lineCountOff = 2;
+		const int lineCountOn = 8, lineCountOff = 2;
 		static const wchar_t *linesOn[lineCountOn] = {
 			L"You've activated Hard Mode!",
 			L" ",
-			L"In Hard Mode, Mario will die",
-			L"any time he takes damage, and",
-			L"the timer will be more strict.",
+			L"In Hard Mode, Luigi will die",
+			L"any time he takes damage.",
 			L" ",
 			L"So treasure your Yoshi, and",
 			L"hold on to your hat, you're",
@@ -466,13 +464,15 @@ void dWMStarCoin_c::executeState_Wait() {
 
 		if (!enableHardMode) {
 			enableHardMode = true;
+			wasHardModeReallyEnabled = true;
 			OSReport("Hard Mode enabled!\n");
 			MapSoundPlayer(SoundRelatedClass, SE_VOC_MA_CS_COURSE_IN_HARD, 1);
 			showSecretMessage(L"Hard Mode", linesOn, lineCountOn);
 		} else {
 			enableHardMode = false;
+			wasHardModeReallyEnabled = false;
 			OSReport("Hard Mode disabled!\n");
-			showSecretMessage(L"Classic Mario", linesOff, lineCountOff);
+			showSecretMessage(L"Classic Luigi", linesOff, lineCountOff);
 		}
 		return;
 	}
@@ -486,17 +486,16 @@ void dWMStarCoin_c::executeState_Wait() {
 				MapSoundPlayer(SoundRelatedClass, SE_VOC_MA_THANK_YOU, 1);
 				//enableDebugMode = !enableDebugMode;
 				//OSReport("Debug mode toggled!\n");
-				const int lineCountOn = 9, lineCountOff = 2;
+				const int lineCountOn = 8, lineCountOff = 2;
 				static const wchar_t *linesOn[lineCountOn] = {
 					L"The experimental Replay",
 					L"Recording feature has",
-					L"been enabled. Enjoy!",
-					L"You'll find your Replays",
-					L"on your SD or USB, depending",
-					L"on where Newer's files are.",
-					L"It might not work, so",
-					L"save your game before you",
-					L"play a level!",
+					L"been enabled. Tho it doesn't",
+					L"work if you don't reenable",
+					L"the replay recorder main hook",
+					L"in the code so you're probably",
+					L"loosing your time right now.",
+					L"You should maybe turn it off.",
 				};
 				static const wchar_t *linesOff[lineCountOff] = {
 					L"Replay Recording",
@@ -506,11 +505,11 @@ void dWMStarCoin_c::executeState_Wait() {
 				if (isReplayEnabled != 100) {
 					isReplayEnabled = 100;
 					OSReport("Replay Recording enabled!\n");
-					showSecretMessage(L"Nice!", linesOn, lineCountOn);
+					showSecretMessage(L"Well...", linesOn, lineCountOn);
 				} else {
 					isReplayEnabled = 0;
 					OSReport("Replay Recording disabled!\n");
-					showSecretMessage(L"Nice!", linesOff, lineCountOff);
+					showSecretMessage(L"Duh!", linesOff, lineCountOff);
 				}
 			}
 			return;
@@ -531,50 +530,49 @@ void dWMStarCoin_c::executeState_Wait() {
 
 				const int msgCount = 9;
 				static const wchar_t *msg[msgCount] = {
-					L"You've found the Totally",
-					L"Secret Collision Debug Mode.",
-					L"We used this to make the",
-					L"hitboxes on our custom sprites",
-					L"and bosses suck less. Awesome,",
-					L"right?!",
-					L"Actually, I did it just to waste",
-					L"some time, but it ended up",
-					L"being pretty useful!",
+					L"You've enabled the Totally",
+					L"Secret Debug Mode.",
+					L"I used it to make some debugging",
+					L"and to stop dying on Mullkaw's",
+					L"levels. Here's how it works,",
+					L"hold these buttons to:",
+					L"B + UP -> Change your powerup",
+					L"B + DOWN -> Beat the level",
+					L"B + LEFT -> turn on/off collisions",
 				};
 				const int msgCount2 = 9;
 				static const wchar_t *msg2[msgCount2] = {
-					L"And yes, I know it doesn't show",
-					L"a couple of things properly",
-					L"like round objects and rolling",
-					L"hills and so on.",
-					L"Can't have it all, can you?",
-					L"Wonder if Nintendo had",
-					L"something like this...",
+					L"B + RIGHT -> Spawn a star",
+					L"B + ONE -> remove musics",
+					L"There's a few other things but",
+					L"they're for debugging and",
+					L"useless for you.",
+					L"It's pretty funny to hide",
+					L"things like that tbh.",
 					L"",
-					L"    Treeki, 9th February 2013",
+					L"    RedStoneMatt, May 16th 2020",
 				};
-				showSecretMessage(L"Groovy!", msg, msgCount, msg2, msgCount2);
+				showSecretMessage(L"Yay!", msg, msgCount, msg2, msgCount2);
 			} else {
-				const int msgCount = 6;
+				const int msgCount = 5;
 				static const wchar_t *msg[msgCount] = {
 					L"You've turned off the Totally",
-					L"Secret Collision Debug Mode.",
+					L"Secret Debug Mode.",
 					L"",
-					L"... and no, I'm not going to write",
-					L"another ridiculously long",
-					L"message to go here. Sorry!",
+					L"Sad, you won't be able to cheat",
+					L"Anymore ! See you next time !",
 				};
 				static const wchar_t *hiddenMsg[] = {
-					L"If you found these messages by",
-					L"looking through strings in the DLCode",
-					L"file, then... that's kind of cheating.",
-					L"Though I can't say I wouldn't do the",
-					L"same!",
-					L"You won't actually see this in game",
-					L"btw :p So why am I bothering with linebreaks anyway? I dunno. Oh well.",
-					L"Also, don't put this message on TCRF. Or do! Whatever. :(",
+					L"Treeki used to hide a message",
+					L"right here, and i totally understand",
+					L"him because it's so satisfying to hide",
+					L"things for secret hunters.",
+					L"Honestly i'd be kinda surprised of someone",
+					L"read this since there's not so much secret hunters",
+					L"in our 'modern days'",
+					L"I wonder what will be the next thing i'll add here :>",
 				};
-				showSecretMessage(L"Groovy!", msg, msgCount, hiddenMsg, 0);
+				showSecretMessage(L"OwO", msg, msgCount, hiddenMsg, 0);
 			}
 		}
 	} else if (nowPressed & WPAD_ONE) {

@@ -1,0 +1,31 @@
+---
+
+
+source_files: [../src/quickrestart.cpp]
+hooks:
+  - name: restartLevel
+    type: branch_insn
+    branch_type: bl
+    src_addr_pal: 0x8013D8EC
+    target_func: 'restartLevel()'   #Executed after the player's death animation
+
+  - name: exitLevel
+    type: branch_insn
+    branch_type: bl
+    src_addr_pal: 0x800D126C
+    target_func: 'exitLevel()'      #Executed after pressing "Exit" in the level pause menu
+
+  - name: CanAlwaysExitLevel1
+    type: patch
+    addr_pal: 0x8015A898
+    data: '38600001'                #li r3, 1
+
+  - name: CanAlwaysExitLevel2
+    type: patch
+    addr_pal: 0x800D0D38
+    data: '38600001'                #li r3, 1
+
+  - name: CanAlwaysExitLevel3
+    type: patch
+    addr_pal: 0x800D0E80
+    data: '38600001'                #li r3, 1

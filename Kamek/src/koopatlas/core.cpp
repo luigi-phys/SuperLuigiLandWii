@@ -13,6 +13,8 @@ CREATE_STATE(dScKoopatlas_c, ContinueWait);
 CREATE_STATE_E(dScKoopatlas_c, Normal);
 CREATE_STATE(dScKoopatlas_c, CompletionMsg);
 CREATE_STATE_E(dScKoopatlas_c, CompletionMsgHideWait);
+CREATE_STATE(dScKoopatlas_c, TipMsg);
+CREATE_STATE_E(dScKoopatlas_c, TipMsgHideWait);
 CREATE_STATE_E(dScKoopatlas_c, CSMenu);
 CREATE_STATE_E(dScKoopatlas_c, TitleConfirmOpenWait);
 CREATE_STATE_E(dScKoopatlas_c, TitleConfirmSelect);
@@ -398,9 +400,13 @@ int dScKoopatlas_c::onCreate() {
 	SpammyReport("onCreate() completed\n");
 	
 	// Prepare this first
+	isFirstPlayMessageDone = true;
 	SaveBlock *save = GetSaveFile()->GetBlock(-1);
 	currentMapID = save->current_world;
 	isFirstPlay = (currentMapID == 0) && (settings & 0x80000000);
+	if(isFirstPlay) {
+		isFirstPlayMessageDone = false;
+	}
 
 	// Are we coming from Kamek cutscene? If so, then do.. some stuff!
 	isAfterKamekCutscene = (settings & 0x40000000);
@@ -481,7 +487,7 @@ int dScKoopatlas_c::onExecute() {
 	dKPMusic::execute();
 	if (!canDoStuff()) return true;
 
-	//SpammyReport("Executing state: %s\n", state.getCurrentState()->getName());
+	// OSReport("Executing state: %s\n", state.getCurrentState()->getName());
 	state.execute();
 
 	return true;
@@ -523,6 +529,11 @@ void dScKoopatlas_c::executeState_Normal() {
 	if (pathManager.completionMessagePending) {
 		OSReport("Going to set CompletionMsg\n");
 		state.setState(&StateID_CompletionMsg);
+		return;
+	}
+	if (!isFirstPlayMessageDone) {
+		OSReport("Going to show the tip message\n");
+		state.setState(&StateID_TipMsg);
 		return;
 	}
 
@@ -986,7 +997,9 @@ void dScKoopatlas_c::executeState_QuickSaveEndCloseWait() {
 
 void dScKoopatlas_c::executeState_SaveError() { }
 
-
+extern int previewID;
+extern bool enableHardMode;
+extern bool wasHardModeReallyEnabled;
 void dScKoopatlas_c::startLevel(dLevelInfo_c::entry_s *entry) {
 
 	StartLevelInfo sl;
@@ -1001,7 +1014,27 @@ void dScKoopatlas_c::startLevel(dLevelInfo_c::entry_s *entry) {
 	sl.level1 = entry->levelSlot;
 	sl.level2 = entry->levelSlot;
 
+	// Player_ID[0] = 1;
+
 	ActivateWipe(WIPE_MARIO);
+
+	if(GameMgrP->eight.checkpointEntranceID != 255 && GameMgrP->eight.checkpointWorldID == entry->worldSlot && GameMgrP->eight.checkpointLevelID == entry->levelSlot) {
+		previewID = 1;
+	}
+	else {
+		previewID = 0;
+	}
+
+	if(entry->levelSlot == 06) {//so filename == XX-07
+		if(!wasHardModeReallyEnabled) {
+			enableHardMode = true;
+		}
+	}
+	else {
+		if(!wasHardModeReallyEnabled) {
+			enableHardMode = false;
+		}
+	}
 
 	DoStartLevel(GetGameMgr(), &sl);
 }
@@ -1083,11 +1116,32 @@ void dScKoopatlas_c::showSaveWindow() {
 	yesNoWindow->visible = true;
 }
 
+static const wchar_t *completionMsgs[] = {
+	L"The most erudite of Buttocks (OwO treeki hides messages here too !)",
+	L"You've collected all of\nthe \x0B\x014F\xBEEF Star Coins in\n",
+	L"You have gotten every \x0B\x013B\xBEEF exit\nin",
+	L"You have gotten everything\nin",
+	L"You have collected all the\nnecessary \x0B\x014F\xBEEF coins to enter\nthe Special World!",
+	L"You have collected all the \x0B\x014F\xBEEF Star\nCoins in the game!",
+	L"You've found every \x0B\x013B\xBEEF exit in the\ngame!",
+	L"You've completed everything in\nSuper Luigi Land Wii!\n\nWe present you a new quest.\nTry pressing \x0B\x0122\xBEEF, \x0B\x0123\xBEEF and \x0B\x0125\xBEEF\n on the Star Coin menu."
+};
+
 void dScKoopatlas_c::beginState_CompletionMsg() {
 	if (pathManager.completionMessageType == 0)
 		pathManager.completionMessageType = 1;
 	OSReport("CompletionMsg beginning with type %d\n", pathManager.completionMessageType);
-	yesNoWindow->type = 21;
+	static const int ynTypes[8] = {
+		/*NULL*/ -1,
+		/*COINS*/ 14,
+		/*EXITS*/ 7,
+		/*WORLD*/ 8,
+		/*COINS EXC W9*/ 9,
+		/*GLOBAL COINS*/ 11,
+		/*GLOBAL EXITS*/ 27,
+		/*EVERYTHING*/ 21
+	};
+	yesNoWindow->type = ynTypes[pathManager.completionMessageType];
 	yesNoWindow->visible = true;
 	mustFixYesNoText = 10; // hacky shit
 }
@@ -1107,9 +1161,7 @@ void dScKoopatlas_c::executeState_CompletionMsg() {
 
 		int type = pathManager.completionMessageType;
 
-		dScript::Res_c *bmg = GetBMG();
-
-		const wchar_t *baseText = bmg->findStringForMessageID(9000, type);
+		const wchar_t *baseText = completionMsgs[type];
 
 		// Used when we assemble a dynamic message
 		wchar_t text[512];
@@ -1117,10 +1169,9 @@ void dScKoopatlas_c::executeState_CompletionMsg() {
 		if (type >= CMP_MSG_COINS && type <= CMP_MSG_WORLD) {
 			// title
 			int w = pathManager.completionMessageWorldNum;
-			// ghb
-			//w = 1;
 			int l = ((w == 5) || (w == 7)) ? 101 : 100;
-			const wchar_t *title = bmg->findStringForMessageID(8000+w, l);
+			dLevelInfo_c::entry_s *titleEntry = dLevelInfo_c::s_info.searchByDisplayNum(w, l);
+			const char *title = dLevelInfo_c::s_info.getNameForLevel(titleEntry);
 
 			// assemble the string
 
@@ -1130,7 +1181,7 @@ void dScKoopatlas_c::executeState_CompletionMsg() {
 			text[pos++] = ' ';
 
 			while (*title) {
-				wchar_t chr = *(title++);
+				char chr = *(title++);
 				if (chr != '-')
 					text[pos++] = chr;
 			}
@@ -1153,6 +1204,49 @@ void dScKoopatlas_c::executeState_CompletionMsg() {
 }
 
 void dScKoopatlas_c::executeState_CompletionMsgHideWait() {
+	if (!yesNoWindow->visible)
+		state.setState(&StateID_Normal);
+}
+
+static const wchar_t *tipMsg = L"Tip:\nAfter losing a life, you'll\nautomatically go back to the\nlevel you were playing.\nTo go to the world map instead,\nhold the \x0B\x0128\xBEEF button right\nafter getting hit.";
+
+void dScKoopatlas_c::beginState_TipMsg() {
+	yesNoWindow->type = 14;
+	yesNoWindow->visible = true;
+	mustFixYesNoText = 10; // hacky shit
+}
+
+void dScKoopatlas_c::endState_TipMsg() {
+	// ghb
+	//pathManager.completionMessagePending = true;
+	isFirstPlayMessageDone = true;
+	//pathManager.completionMessageType ++;
+}
+
+void dScKoopatlas_c::executeState_TipMsg() {
+	// hacky shit
+	if (mustFixYesNoText > 0) {
+		mustFixYesNoText--;
+
+		// int type = pathManager.completionMessageType;
+
+		const wchar_t *baseText = tipMsg;
+
+		// Used when we assemble a dynamic message
+
+		yesNoWindow->T_question_00->SetString(baseText);
+		yesNoWindow->T_questionS_00->SetString(baseText);
+	}
+
+	if (!yesNoWindow->animationActive) {
+		if (Wiimote_TestButtons(GetActiveWiimote(), WPAD_A | WPAD_TWO)) {
+			yesNoWindow->close = true;
+			state.setState(&StateID_TipMsgHideWait);
+		}
+	}
+}
+
+void dScKoopatlas_c::executeState_TipMsgHideWait() {
 	if (!yesNoWindow->visible)
 		state.setState(&StateID_Normal);
 }

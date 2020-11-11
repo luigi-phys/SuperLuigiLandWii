@@ -60,6 +60,8 @@ class dScKoopatlas_c : public dScene_c {
 		DECLARE_STATE(Normal);
 		DECLARE_STATE(CompletionMsg);
 		DECLARE_STATE(CompletionMsgHideWait);
+		DECLARE_STATE(TipMsg);
+		DECLARE_STATE(TipMsgHideWait);
 		DECLARE_STATE(CSMenu);
 		DECLARE_STATE(TitleConfirmOpenWait);
 		DECLARE_STATE(TitleConfirmSelect);
@@ -117,6 +119,7 @@ class dScKoopatlas_c : public dScene_c {
 		dDvdLoader_c mapListLoader;
 
 		bool isFirstPlay;
+		bool isFirstPlayMessageDone;
 		bool isAfterKamekCutscene;
 		bool isAfter8Castle;
 		bool isEndingScene;
