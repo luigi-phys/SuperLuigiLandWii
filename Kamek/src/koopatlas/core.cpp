@@ -1347,7 +1347,7 @@ static const wchar_t *tipMsgEN = L"Tip:\nAfter losing a life, you'll\nautomatica
 
 static const wchar_t *tipMsgGE = L"Hinweis:\nWenn du stirbst, wirst\ndu automatisch in das gerade\ngespielte Level zurückgebracht.\nUm zur Karte zurückzukehren,\nhalte den \x0B\x0128\xBEEF Knopf gedrückt,\nnachdem du getroffen wurdest."; //" oder \x0B\x0122\xBEEF" was removed cuz too long
 
-static const wchar_t *tipMsgFR = L"Astuce:\nAprès avoir perdu une vie, vous\nrecommencerez automatiquement\nle niveau dans lequel vous étiez.\nPour retourner à la carte du\nmonde à la place, maintenez \x0B\x0128\xBEEF ou \x0B\x0122\xBEEF\naprès vous être fait touché.";
+static const wchar_t *tipMsgFR = L"Astuce:\nAprès avoir perdu une vie, vous\nrecommencerez automatiquement\nle niveau dans lequel vous étiez.\nPour retourner à la carte du\nmonde à la place, maintenez \x0B\x0128\xBEEF\nou \x0B\x0122\xBEEF après vous être fait touché.";
 
 static const wchar_t *tipMsgSP = L"Ayuda:\nDespués de perder una vida,\nvolverás automáticamente\nal nivel que estabas jugando.\nPara volver al mapa en vez,\nmantén apretado \x0B\x0128\xBEEF o \x0B\x0122\xBEEF\ndespués de ser golpeado.";
 
