@@ -5,11 +5,34 @@ bool s_levelInfoLoaded = false;
 
 dLevelInfo_c dLevelInfo_c::s_info;
 
+extern "C" int GetGameLanguage(int nyeh); //nyeh is always 4 for some reasons
+
 bool LoadLevelInfo() {
 	if (s_levelInfoLoaded)
 		return true;
 
-	void *data = s_levelInfoLoader.load("/NewerRes/LevelInfo.bin");
+	void *data;
+	if(GetGameLanguage(4) == 0) { // Japanese
+		data = s_levelInfoLoader.load("/NewerRes/LevelInfoJP.bin");
+	}
+	if(GetGameLanguage(4) == 1) { // English
+		data = s_levelInfoLoader.load("/NewerRes/LevelInfoEN.bin");
+	}
+	if(GetGameLanguage(4) == 2) { // German
+		data = s_levelInfoLoader.load("/NewerRes/LevelInfoGE.bin");
+	}
+	if(GetGameLanguage(4) == 3) { // French
+		data = s_levelInfoLoader.load("/NewerRes/LevelInfoFR.bin");
+	}
+	if(GetGameLanguage(4) == 4) { // Spanish
+		data = s_levelInfoLoader.load("/NewerRes/LevelInfoSP.bin");
+	}
+	if(GetGameLanguage(4) == 5) { // Italian
+		data = s_levelInfoLoader.load("/NewerRes/LevelInfoIT.bin");
+	}
+	if(GetGameLanguage(4) == 6) { // Dutch
+		data = s_levelInfoLoader.load("/NewerRes/LevelInfoDU.bin");
+	}
 	if (data) {
 		dLevelInfo_c::s_info.load(data);
 		s_levelInfoLoaded = true;

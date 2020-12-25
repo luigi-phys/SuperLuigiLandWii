@@ -37,20 +37,11 @@ FSShowCD_OpenWait:
 #	addi r1, r1, 0x10
 #	blr
 
+.extern _ZN11dDateFile_c7fileNumEv
 .global DFNiceTitle
 DFNiceTitle:
-	mr r3, r4
-	lis r4, DFTitle@h
-	ori r4, r4, DFTitle@l
-	lwz r6, 0xE44(r30)
-	addi r6, r6, '1'
-	sth r6, 0xA(r4)
-	li r5, 0
-	li r6, 6
-	lwz r12, 0(r3)
-	lwz r12, 0x80(r12)
-	mtctr r12
-	bctr
+	mr r3, r30
+	b _ZN11dDateFile_c7fileNumEv
 
 .extern findTextBoxByName__Q23m2d17EmbedLayoutBase_cCFPCc
 .extern findPictureByName__Q23m2d17EmbedLayoutBase_cCFPCc
@@ -163,6 +154,9 @@ chosenWName:
 .extern _Z28ClearOldPathAvailabilityDatav
 	bl _Z28ResetAllCompletionCandidatesv
 	bl _Z28ClearOldPathAvailabilityDatav
+
+	mr r3, r30
+	bl _ZN11dDateFile_c9worldNameEv
 
 	lwz r22, 0x24(r1)
 	lwz r21, 0x28(r1)

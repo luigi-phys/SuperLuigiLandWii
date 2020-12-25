@@ -97,6 +97,8 @@ class dCreditsMgr_c : public dActorState_c {
 		int fireworksCountdown;
 		int fwID;
 
+		int textNum;
+
 		int fauxScrollFrame;
 		float fauxScrollMinX, fauxScrollMaxX, fauxScrollY;
 
@@ -315,6 +317,9 @@ int dCreditsMgr_c::onExecute() {
 					break;
 
 				case 7: { // Set names. FUN!
+
+					this->textNum++;
+
 					int titleLength = *(read++);
 					int nameCount = *(read++);
 
@@ -323,8 +328,30 @@ int dCreditsMgr_c::onExecute() {
 
 					read += titleLength;
 
-					WriteAsciiToTextBox(Name, (const char*)read);
-					WriteAsciiToTextBox(NameS, (const char*)read);
+					if(this->textNum == 15) {
+						const char* nameToDisplay = (const char*)read;
+
+
+						int charCount = 0;
+						wchar_t newNameToDisplay[1024];
+						while (charCount < 1023 && nameToDisplay[charCount]) {
+							newNameToDisplay[charCount] = (unsigned char)(nameToDisplay[charCount]);
+							charCount++;
+						}
+						charCount = wcslen(newNameToDisplay);
+						newNameToDisplay[charCount++] = L'南';
+						newNameToDisplay[charCount++] = L'無';
+						newNameToDisplay[charCount++] = L'さ';
+						newNameToDisplay[charCount++] = L'ん';
+						newNameToDisplay[charCount] = 0;
+
+						Name->SetString(newNameToDisplay);
+						NameS->SetString(newNameToDisplay);
+					}
+					else {
+						WriteAsciiToTextBox(Name, (const char*)read);
+						WriteAsciiToTextBox(NameS, (const char*)read);
+					}
 
 					float calcHeight = 29.0f * nameCount;
 					TitleContainer->trans.y = (calcHeight * 0.5f) + 3.0f;

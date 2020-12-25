@@ -69,9 +69,10 @@ class dWMStarCoin_c : public dActor_c {
 		nw4r::lyt::TextBox
 			*LevelName[COLUMN_COUNT][ROW_COUNT],
 			*LeftTitle, *RightTitle,
-			*TotalCoinCount, *UnspentCoinCount,
+			*TotalCoinCount,
 			*EarnedCoinCount, *EarnedCoinMax,
-			*BtnBackText;
+			*BtnBackText, *CollectedTitle,
+			*BtnWorldSelText, *TotalCoinsTitle;
 
 		dStateWrapper_c<dWMStarCoin_c> state;
 

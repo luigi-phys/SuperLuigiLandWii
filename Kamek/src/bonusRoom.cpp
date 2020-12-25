@@ -169,7 +169,7 @@ const char* Prizes[10][4] = {
 	{ "I_penguin", 		"g3d/I_penguin.brres", 			"I_penguin", 			"wait2" },
 	{ "I_kinoko_bundle","g3d/I_mini_kinoko.brres", 		"I_mini_kinoko", 		"wait2" },
 	{ "I_star", 		"g3d/I_star.brres", 			"I_star", 				"wait2" },
-	{ "I_hammer", 		"g3d/I_fireflower.brres", 		"I_fireflower", 			"wait2" },
+	{ "I_hammer", 		"g3d/I_fireflower.brres", 		"I_fireflower", 		"wait2" },
 	{ "I_kinoko_bundle","g3d/I_life_kinoko.brres", 		"I_life_kinoko", 		"wait2" },
 	{ "obj_coin", 		"g3d/obj_coin.brres", 			"obj_coin", 			"wait2" }
 };

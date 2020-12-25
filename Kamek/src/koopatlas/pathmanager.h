@@ -96,6 +96,7 @@ class dWMPathManager_c {
 	public:
 		bool shouldRequestSave;
 		bool isEnteringLevel;
+		bool isEnteringFinalLevel;
 		bool completionMessagePending;
 		int dmGladDuration;
 		int completionAnimDelay;

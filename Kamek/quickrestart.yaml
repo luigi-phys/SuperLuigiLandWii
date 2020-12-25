@@ -15,6 +15,11 @@ hooks:
     src_addr_pal: 0x800D126C
     target_func: 'exitLevel()'      #Executed after pressing "Exit" in the level pause menu
 
+  - name: noGameOverPowerupClear
+    type: patch
+    addr_pal: 0x80789034
+    data: '48000014'                #Skips the reset powerup part when a Game Over is triggered
+
   - name: CanAlwaysExitLevel1
     type: patch
     addr_pal: 0x8015A898

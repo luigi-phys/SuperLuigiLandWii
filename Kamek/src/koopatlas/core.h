@@ -11,6 +11,7 @@
 #include <sfx.h>
 
 #include "levelinfo.h"
+#include "worldnames.h"
 #include "koopatlas/mapdata.h"
 #include "koopatlas/shop.h"
 #include "koopatlas/starcoin.h"

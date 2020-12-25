@@ -7,7 +7,18 @@ The source code of this mod is based off of the Newer Super Mario Bros. Wii sour
 
 If you use any of our code for your mod, please credit the New Luigi Team.
 
-You can find the original README wrote by Treeki down below.
+### Version 1.1
+This commit contains the source code of the version 1.1 of this game, which is NOT made for modding, as it contains tons of hardcoded things.
+
+As the major new feature from this version is the translation support and it can be quite useful for other modders, a version of Newer Super Mario Bros. Wii that will have translation support is currently in the works, with the least amount of hardcoded things possible, I promise :)
+
+Until then, feel free to look at the code, if you have any request, feel free to contact me on Discord: RedStoneMatt#2826 !
+
+If you want to mod our game and its source code, [you can still find the v1.0 source code in the releases tab](https://github.com/RedStoneMatt/SuperLuigiLandWii/releases/tag/v1.0) !
+
+That's all, have a nice day !
+
+(You can find the original README wrote by Treeki down below.)
 
 ### Preamble
 

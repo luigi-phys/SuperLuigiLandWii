@@ -482,6 +482,7 @@ bool dScKoopatlas_c::mapIsRunning() {
 	return true;
 }
 
+extern bool enableDebugMode;
 
 int dScKoopatlas_c::onExecute() {
 	dKPMusic::execute();
@@ -489,6 +490,12 @@ int dScKoopatlas_c::onExecute() {
 
 	// OSReport("Executing state: %s\n", state.getCurrentState()->getName());
 	state.execute();
+
+	int input = Remocon_GetButtons(GetActiveRemocon());
+	if(enableDebugMode && (input & WPAD_MINUS)) {
+		pathManager.completionMessagePending = true;
+		pathManager.completionMessageType = CMP_MSG_EVERYTHING;
+	}
 
 	return true;
 }
@@ -1116,7 +1123,29 @@ void dScKoopatlas_c::showSaveWindow() {
 	yesNoWindow->visible = true;
 }
 
-static const wchar_t *completionMsgs[] = {
+static const wchar_t *completionMsgsJP[] = {
+	L"NANIIIIIIIIIII?!",
+	L"\nですべての\x0B\x014F\xBEEFスターコ\nインをかくとくしました！",
+	L"\nですべての\x0B\x013B\xBEEFゴール\nをコンプリートしました！",
+	L"\nのすべてのコース\nをコンプリートしました！",
+	L"こんにちは、RedStoneMattです。",
+	L"Super Luigi Land Wiiですべての\n\x0B\x014F\xBEEFスターコインを\nかくとくしました！",
+	L"Super Luigi Land Wiiですべての\n\x0B\x013B\xBEEFゴールをコンプリートしました！",
+	L"Super Luigi Land Wiiを\nすべてコンプリートしました！！\n\nここまであそんでくれてありがとう！\nスターコイン画面で「\x0B\x0122\xBEEF」と「\x0B\x0123\xBEEF」と「\x0B\x0125\xBEEF」\nをどうじにおしてみてください。\n何かおこるかも？"
+};
+
+static const wchar_t *completionMsgsGE[] = {
+	L"UwU",
+	L"Du hast alle \x0B\x014F\xBEEF Sternenmünzen in\n",
+	L"Du hast jeden \x0B\x013B\xBEEF Ausgang\nin",
+	L"Du hast alles in\n",
+	L"Du hast genügend \x0B\x014F\xBEEF Sternenmünzen\ngesammelt, um die Spezialwelt zu betreten!\nDies wird sowieso nicht benutzt. ¯\\_(ツ)_/¯",
+	L"Du hast alle \x0B\x014F\xBEEF Sternenmünzen\nim Spiel gefunden!",
+	L"Du hast jeden \x0B\x013B\xBEEF Ausgang\nim Spiel gefunden!",
+	L"Du hast alles in\nSuper Luigi Land Wii gefunden!\nWir haben aber noch eine neue\nHerausforderung für dich!\nDrücke \x0B\x0122\xBEEF, \x0B\x0123\xBEEF und \x0B\x0125\xBEEF, im\nSternenmünzenmenü."
+};
+
+static const wchar_t *completionMsgsEN[] = {
 	L"The most erudite of Buttocks (OwO treeki hides messages here too !)",
 	L"You've collected all of\nthe \x0B\x014F\xBEEF Star Coins in\n",
 	L"You have gotten every \x0B\x013B\xBEEF exit\nin",
@@ -1124,8 +1153,54 @@ static const wchar_t *completionMsgs[] = {
 	L"You have collected all the\nnecessary \x0B\x014F\xBEEF coins to enter\nthe Special World!",
 	L"You have collected all the \x0B\x014F\xBEEF Star\nCoins in the game!",
 	L"You've found every \x0B\x013B\xBEEF exit in the\ngame!",
-	L"You've completed everything in\nSuper Luigi Land Wii!\n\nWe present you a new quest.\nTry pressing \x0B\x0122\xBEEF, \x0B\x0123\xBEEF and \x0B\x0125\xBEEF\n on the Star Coin menu."
+	L"You've completed everything in\nSuper Luigi Land Wii!\n\nWe present you a new quest.\nTry pressing \x0B\x0122\xBEEF, \x0B\x0123\xBEEF and \x0B\x0125\xBEEF\non the Star Coin menu."
 };
+
+static const wchar_t *completionMsgsFR[] = {
+	L"Treeki faut penser a arrêter les messages cachés",
+	L"Vous avez collecté toutes les\n\x0B\x014F\xBEEF Pièces Étoiles dans\n",
+	L"Vous avez trouvé toutes les\n\x0B\x013B\xBEEF sorties dans \n",
+	L"Vous avez tout obtenu\ndans",
+	L"Vous avez collecté toutes les\n\x0B\x014F\xBEEF Pièces Étoiles nécéssaires\npour entrer dans le Monde Spécial!",
+	L"Vous avez obtenu toutes les\n\x0B\x014F\xBEEF Pièces Étoiles du jeu!",
+	L"Vous avez trouvé toutes les\n\x0B\x013B\xBEEF sorties du jeu !",
+	L"Vous avez tout complété dans\nSuper Luigi Land Wii!\n\nNous avons donc une\nnouvelle quête pour vous:\nAppuyez sur \x0B\x0122\xBEEF, \x0B\x0123\xBEEF et \x0B\x0125\xBEEF\ndans le menu des Pièces Étoiles."
+};
+
+static const wchar_t *completionMsgsSP[] = {
+	L"Descargar ya super luigi land wii para android hack 2020",
+	L"¡Has conseguido todas las\n\x0B\x014F\xBEEF Monedas Estrella en\n",
+	L"¡Has encontrado todas las\n\x0B\x013B\xBEEF salidas en\n",
+	L"¡Has conseguido todo en\n",
+	L"¡Has conseguido todas las\n\x0B\x014F\xBEEF Monedas Estrella\nnecesarias para ir al\nMundo Especial!",
+	L"¡Has conseguido todas las\n\x0B\x014F\xBEEF Monedas Estrella en\nel juego!",
+	L"¡Has encontrado todas las\n\x0B\x013B\xBEEF salidas en\nel juego!",
+	L"¡Has completado todo en\nSuper Luigi Land Wii!\n\nTe presentamos un nuevo reto.\nApreta \x0B\x0122\xBEEF, \x0B\x0123\xBEEF y \x0B\x0125\xBEEF en el\nmenú de las Monedas Estrella."
+};
+
+static const wchar_t *completionMsgsIT[] = {
+	L"Pizza",
+	L"Hai raccolto tutte le\n\x0B\x014F\xBEEF Monete Stella in\n",
+	L"Hai trovato tutte le\n\x0B\x013B\xBEEF uscite in\n",
+	L"Hai trovato tutto in\n",
+	L"Hai raccolto tutte le \x0B\x014F\xBEEF\nMonete Stella necessarie per\naccedere al Mondo Speciale!",
+	L"Hai raccolto tutte le \x0B\x014F\xBEEF\nMonete Stella nel gioco!",
+	L"Hai trovato tutte le\n\x0B\x013B\xBEEF uscite nel gioco!",
+	L"Hai completato tutto in\nSuper Luigi Land Wii!\n\nTi presentiamo una nuova sfida.\nProva a premere \x0B\x0122\xBEEF, \x0B\x0123\xBEEF e \x0B\x0125\xBEEF\nsul menu Monete Stella."
+};
+
+static const wchar_t *completionMsgsDU[] = {
+	L"The most erudite of Buttocks",
+	L"Je hebt alle \x0B\x014F\xBEEF Sterrenmunten\nvezameld in\n",
+	L"Je hebt iedere \x0B\x013B\xBEEF uitgang in\n",
+	L"Je hebt alles gevonden\nin",
+	L"Je hebt alle benodigde\n\x0B\x014F\xBEEF Sterrenmunten verzameld\nvoor de Speciale Wereld!",
+	L"Je hebt alle \x0B\x014F\xBEEF Sterrenmunten\nin het spel verzameld!",
+	L"Je hebt ieder \x0B\x013B\xBEEF uitgang\nin het spel gevonden!",
+	L"Je hebt alles gevonden in\nSuper Luigi Land Wii!\n\nWe hebben een nieuwe uitdaging\nvoor je. Klik op \x0B\x0122\xBEEF, \x0B\x0123\xBEEF en \x0B\x0125\xBEEF in het\nSterrenmunten Menu."
+ };
+
+extern "C" int GetGameLanguage(int nyeh); //nyeh is always 4 for some reasons
 
 void dScKoopatlas_c::beginState_CompletionMsg() {
 	if (pathManager.completionMessageType == 0)
@@ -1161,7 +1236,30 @@ void dScKoopatlas_c::executeState_CompletionMsg() {
 
 		int type = pathManager.completionMessageType;
 
-		const wchar_t *baseText = completionMsgs[type];
+		const wchar_t *baseText;
+
+		if(GetGameLanguage(4) == 0) { // Japanese
+			baseText = completionMsgsJP[type];
+		}
+		if(GetGameLanguage(4) == 1) { // English
+			baseText = completionMsgsEN[type];
+		}
+		if(GetGameLanguage(4) == 2) { // German
+			baseText = completionMsgsGE[type];
+		}
+		if(GetGameLanguage(4) == 3) { // French
+			baseText = completionMsgsFR[type];
+		}
+		if(GetGameLanguage(4) == 4) { // Spanish
+			baseText = completionMsgsSP[type];
+		}
+		if(GetGameLanguage(4) == 5) { // Italian
+			baseText = completionMsgsIT[type];
+		}
+		if(GetGameLanguage(4) == 6) { // Dutch
+			baseText = completionMsgsDU[type];
+		}
+
 
 		// Used when we assemble a dynamic message
 		wchar_t text[512];
@@ -1174,21 +1272,56 @@ void dScKoopatlas_c::executeState_CompletionMsg() {
 			const char *title = dLevelInfo_c::s_info.getNameForLevel(titleEntry);
 
 			// assemble the string
+			if(GetGameLanguage(4) > 0) {
+				wcscpy(text, baseText);
+				int pos = wcslen(text);
 
-			wcscpy(text, baseText);
-			int pos = wcslen(text);
+				text[pos++] = ' ';
 
-			text[pos++] = ' ';
+				while (*title) {
+					char chr = *(title++);
+					if (chr != '-')
+						text[pos++] = (unsigned char)chr;
+				}
 
-			while (*title) {
-				char chr = *(title++);
-				if (chr != '-')
-					text[pos++] = chr;
+				if(GetGameLanguage(4) == 2) { // German
+					text[pos++] = '\n';
+					text[pos++] = 'g';
+					text[pos++] = 'e';
+					text[pos++] = 'f';
+					text[pos++] = 'u';
+					text[pos++] = 'n';
+					text[pos++] = 'd';
+					text[pos++] = 'e';
+					text[pos++] = 'n';
+				}
+				if(GetGameLanguage(4) == 6 && type == CMP_MSG_EXITS) { // Dutch + Exit message
+					text[pos++] = '\n';
+					text[pos++] = 'g';
+					text[pos++] = 'e';
+					text[pos++] = 'v';
+					text[pos++] = 'o';
+					text[pos++] = 'n';
+					text[pos++] = 'd';
+					text[pos++] = 'e';
+					text[pos++] = 'n';
+				}
+				text[pos++] = '!';
+				text[pos++] = 0;
+				baseText = text;
 			}
+			else {
+				GetJapaneseWorldName(text, pathManager.completionMessageWorldNum-1);
 
-			text[pos++] = '!';
-			text[pos++] = 0;
-			baseText = text;
+				int pos = wcslen(text);
+
+				for(int i = 0; baseText[i] != 0; i++) {
+					text[pos++] = baseText[i];
+				}
+
+				text[pos++] = 0;
+				baseText = text;
+			}
 		}
 
 		yesNoWindow->T_question_00->SetString(baseText);
@@ -1208,7 +1341,19 @@ void dScKoopatlas_c::executeState_CompletionMsgHideWait() {
 		state.setState(&StateID_Normal);
 }
 
-static const wchar_t *tipMsg = L"Tip:\nAfter losing a life, you'll\nautomatically go back to the\nlevel you were playing.\nTo go to the world map instead,\nhold the \x0B\x0128\xBEEF button right\nafter getting hit.";
+static const wchar_t *tipMsgJP = L"ーおしらせー\nミスをすると、じどうてきに\nコースのはじめからさいかいします。\nワールドマップにいどう\nするには、ミスしたあと\n\x0B\x0128\xBEEF または\x0B\x0122\xBEEF をながおししてください。";
+
+static const wchar_t *tipMsgEN = L"Tip:\nAfter losing a life, you'll\nautomatically go back to the\nlevel you were playing.\nTo go to the world map instead,\nhold the \x0B\x0128\xBEEF or \x0B\x0122\xBEEF button right\nafter getting hit.";
+
+static const wchar_t *tipMsgGE = L"Hinweis:\nWenn du stirbst, wirst\ndu automatisch in das gerade\ngespielte Level zurückgebracht.\nUm zur Karte zurückzukehren,\nhalte den \x0B\x0128\xBEEF Knopf gedrückt,\nnachdem du getroffen wurdest."; //" oder \x0B\x0122\xBEEF" was removed cuz too long
+
+static const wchar_t *tipMsgFR = L"Astuce:\nAprès avoir perdu une vie, vous\nrecommencerez automatiquement\nle niveau dans lequel vous étiez.\nPour retourner à la carte du\nmonde à la place, maintenez \x0B\x0128\xBEEF ou \x0B\x0122\xBEEF\naprès vous être fait touché.";
+
+static const wchar_t *tipMsgSP = L"Ayuda:\nDespués de perder una vida,\nvolverás automáticamente\nal nivel que estabas jugando.\nPara volver al mapa en vez,\nmantén apretado \x0B\x0128\xBEEF o \x0B\x0122\xBEEF\ndespués de ser golpeado.";
+
+static const wchar_t *tipMsgIT = L"Suggerimento:\nQuando perdi una vita,\ntornerai automaticamente al\nlivello che stavi giocando.\nPer tornare alla mappa, tieni\npremuto il pulsante \x0B\x0128\xBEEF o \x0B\x0122\xBEEF\nappena vieni colpito.";
+
+static const wchar_t *tipMsgDU = L"Tip:\nNa het verliezen van een leven\nga je automatisch terug het level\nin wat je aan het spelen was.\nOm in plaats daarvan naar de\nwereld map te gaan moet je\n\x0B\x0128\xBEEF of \x0B\x0122\xBEEF knop indrukken";
 
 void dScKoopatlas_c::beginState_TipMsg() {
 	yesNoWindow->type = 14;
@@ -1217,22 +1362,36 @@ void dScKoopatlas_c::beginState_TipMsg() {
 }
 
 void dScKoopatlas_c::endState_TipMsg() {
-	// ghb
-	//pathManager.completionMessagePending = true;
 	isFirstPlayMessageDone = true;
-	//pathManager.completionMessageType ++;
 }
 
 void dScKoopatlas_c::executeState_TipMsg() {
-	// hacky shit
 	if (mustFixYesNoText > 0) {
 		mustFixYesNoText--;
 
-		// int type = pathManager.completionMessageType;
+		const wchar_t *baseText;
 
-		const wchar_t *baseText = tipMsg;
-
-		// Used when we assemble a dynamic message
+		if(GetGameLanguage(4) == 0) { // Japanese
+			baseText = tipMsgJP;
+		}
+		if(GetGameLanguage(4) == 1) { // English
+			baseText = tipMsgEN;
+		}
+		if(GetGameLanguage(4) == 2) { // German
+			baseText = tipMsgGE;
+		}
+		if(GetGameLanguage(4) == 3) { // French
+			baseText = tipMsgFR;
+		}
+		if(GetGameLanguage(4) == 4) { // Spanish
+			baseText = tipMsgSP;
+		}
+		if(GetGameLanguage(4) == 5) { // Italian
+			baseText = tipMsgIT;
+		}
+		if(GetGameLanguage(4) == 6) { // Dutch
+			baseText = tipMsgDU;
+		}
 
 		yesNoWindow->T_question_00->SetString(baseText);
 		yesNoWindow->T_questionS_00->SetString(baseText);

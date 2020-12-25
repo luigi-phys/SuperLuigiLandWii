@@ -1,0 +1,8 @@
+---
+source_files: [../src/pauseMenu.S]
+hooks:
+  - name: PM_ChangeForLanguage
+    type: branch_insn
+    branch_type: b
+    src_addr_pal: 0x8015A7B4
+    target_func: 'PM_ChangeForLanguage'

@@ -77,7 +77,7 @@ int dMsgBoxManager_c::onDelete() {
 	instance = 0;
 
 	MessageBoxIsShowing = false;
-	if (canCancel && StageC4::instance)
+	if (canCancel && StageC4::instance && !doNotPause)
 		StageC4::instance->_1D = 0; // disable no-pause
 	msgDataLoader.unload();
 
@@ -88,10 +88,50 @@ int dMsgBoxManager_c::onDelete() {
 // Load Resources
 CREATE_STATE_E(dMsgBoxManager_c, LoadRes);
 
+extern "C" int GetGameLanguage(int nyeh); //nyeh is always 4 for some reasons
+
 void dMsgBoxManager_c::executeState_LoadRes() {
-	if (msgDataLoader.load("/NewerRes/Messages.bin")) {
-		state.setState(&StateID_Wait);
-	} else {
+	if(GetGameLanguage(4) == 0) { // Japanese
+		if (msgDataLoader.load("/NewerRes/MessagesJP.bin")) {
+			state.setState(&StateID_Wait);
+		} else {
+		}
+	}
+	if(GetGameLanguage(4) == 1) { // English
+		if (msgDataLoader.load("/NewerRes/MessagesEN.bin")) {
+			state.setState(&StateID_Wait);
+		} else {
+		}
+	}
+	if(GetGameLanguage(4) == 2) { // German
+		if (msgDataLoader.load("/NewerRes/MessagesGE.bin")) {
+			state.setState(&StateID_Wait);
+		} else {
+		}
+ 	}
+	if(GetGameLanguage(4) == 3) { // French
+		if (msgDataLoader.load("/NewerRes/MessagesFR.bin")) {
+			state.setState(&StateID_Wait);
+		} else {
+		}
+	}
+	if(GetGameLanguage(4) == 4) { // Spanish
+		if (msgDataLoader.load("/NewerRes/MessagesSP.bin")) {
+			state.setState(&StateID_Wait);
+		} else {
+		}
+	}
+	if(GetGameLanguage(4) == 5) { // Italian
+		if (msgDataLoader.load("/NewerRes/MessagesIT.bin")) {
+			state.setState(&StateID_Wait);
+		} else {
+		}
+	}
+	if(GetGameLanguage(4) == 6) { // Dutch
+		if (msgDataLoader.load("/NewerRes/MessagesDU.bin")) {
+			state.setState(&StateID_Wait);
+		} else {
+		}
 	}
 }
 
@@ -145,7 +185,9 @@ CREATE_STATE(dMsgBoxManager_c, BoxAppearWait);
 void dMsgBoxManager_c::beginState_BoxAppearWait() {
 	visible = true;
 	MessageBoxIsShowing = true;
-	StageC4::instance->_1D = 1; // enable no-pause
+	if(!doNotPause) {
+		StageC4::instance->_1D = 1; // enable no-pause
+	}
 	layout.enableNonLoopAnim(ANIM_BOX_APPEAR);
 
 	nw4r::snd::SoundHandle handle;
@@ -205,7 +247,7 @@ void dMsgBoxManager_c::executeState_BoxDisappearWait() {
 void dMsgBoxManager_c::endState_BoxDisappearWait() {
 	visible = false;
 	MessageBoxIsShowing = false;
-	if (canCancel && StageC4::instance)
+	if (canCancel && StageC4::instance && !doNotPause)
 		StageC4::instance->_1D = 0; // disable no-pause
 }
 

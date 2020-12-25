@@ -1,8 +1,14 @@
 ---
 source_files: [../src/corseClear.S]
 hooks:
-  - name: GenericCorseClear
+  - name: DutchCorseClearBrlyt
     type: branch_insn
-    branch_type: bl
-    src_addr_pal: 0x80779A28
-    target_func: 'GenericCorseClear'
+    branch_type: b
+    src_addr_pal: 0x80779AE0 #We need that to be only on PAL versions of the game, so made it so it's ignored in other versions (check mapfile_tool.py for more details)
+    target_func: 'DutchCorseClearBrlyt'
+    
+  - name: DutchCorseClearBrlan
+    type: branch_insn
+    branch_type: b
+    src_addr_pal: 0x80779B94 #We need that to be only on PAL versions of the game, so made it so it's ignored in other versions (check mapfile_tool.py for more details)
+    target_func: 'DutchCorseClearBrlan'

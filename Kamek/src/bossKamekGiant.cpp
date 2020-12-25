@@ -215,7 +215,7 @@ void daBossKameckGiant_c::setupBodyModel() {
 }
 int daBossKameckGiant_c::onCreate() {
 	setupBodyModel();
-	OSReport("settings = %d\n", this->settings); //This is a debug thing, tbh i don't even remember why did i need kamek's settings, but not commenting it here because it isn't commented in the 1.0 build, my bad. -RedStoneMatt 10/11/2020
+	OSReport("settings = %d\n", this->settings);
 
 	this->scale = (Vec){1.0, 1.0, 1.0};
 
@@ -294,12 +294,12 @@ int daBossKameckGiant_c::onExecute() {
 
 	bool flagOn = isEventTriggered(17);
 	if(flagOn && !isTriggered) {
-		OSReport("OWO TRIGGGGGEEEEERRRRRRRRED\n"); //PLEASE don't judge me. -RedStoneMatt 10/11/2020
+		OSReport("OWO TRIGGGGGEEEEERRRRRRRRED\n");
 		doStateChange(&StateID_Outro);
 		isTriggered = true;
 	}
 	if(!flagOn && isTriggered) {
-		OSReport("OWO UNTRIGGGGGEEEEERRRRRRRRED\n"); //You saw nothing. -RedStoneMatt 10/11/2020
+		OSReport("OWO UNTRIGGGGGEEEEERRRRRRRRED\n");
 		isTriggered = false;
 	}
 	
@@ -341,7 +341,7 @@ void daBossKameckGiant_c::changeBroomVisibility(bool visibility) {
 
 void daBossKameckGiant_c::beginState_Appear() {
 	this->scale = (Vec){1.0, 1.0, 1.0};
-	for (int i = 0; i < 4; i++) { //Okay, writing it because otherwise i'm sure people will call me a code stealer: THIS FOR LOOP IS FROM bossCaptainBowser.cpp AND I USED IT BECAUSE THAT'S JUST THE FUCKING WAY IT WORKS. -RedStoneMatt 11/10/2020
+	for (int i = 0; i < 4; i++) {
 		if (dAcPy_c *player = dAcPy_c::findByID(i)) {
 			// dAcPy_c *player = dAcPy_c::findByID(i);
 			player->direction = 1;
@@ -480,7 +480,7 @@ void daBossKameckGiant_c::executeState_FireShoot() {
 		float ratio = (spawningPos.y - mario->pos.y) / (spawningPos.x - mario->pos.x); //This line was made by Grop.
 		float thatx = sqrtf(totalSpeed * totalSpeed / (1 + ratio * ratio)); //This line was made by Grop.
 		if(facing == 1) {
-			thatx = thatx * -1; //Could literally have used *= actually. -RedStoneMatt 11/10/2020
+			thatx = thatx * -1;
 		}
 		float thaty = ratio * bullet->speed.x;
 

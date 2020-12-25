@@ -5,6 +5,7 @@ source_files:
   - ../src/fileload.cpp
   - ../src/scene.S
   - ../src/levelinfo.cpp
+  - ../src/worldnames.cpp
   - ../src/koopatlas/core.cpp
   - ../src/koopatlas/player.cpp
   - ../src/koopatlas/hud.cpp

@@ -7,9 +7,6 @@
 #include "boss.h"
 #include "effects.h"
 
-//Okay listen, this sprite is really really badly made, as it was made in less than an hour iirc, so PLEASE don't judge me on this one.
-// -RedStoneMatt 11/10/2020
-
 bool isMarioEventTriggered(int eventID) {
 	u64 eventFlag = ((u64)1 << (eventID - 1));
 	if(dFlagMgr_c::instance->flags & eventFlag) {

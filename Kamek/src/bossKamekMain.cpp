@@ -5,137 +5,132 @@
 #include <stage.h>
 #include "boss.h"
 
-
-//Before anything, i'd like to give credits to Treeki, Tempus and megazig for their custom sprites code, as all my custom sprites are based on them.
-//Why do I say that even if it's so obvious ? WELL BECAUSE A DUMBASS CALLED MEATBALL132 DARE SAY I'M STEALING HIS CODE AND I SHOULD GIVE CREDITS INTO EVERY SINGLE FUCKING LINE IM TYPING.
-// -RedStoneMatt 11/10/2020
-
-
 extern "C" void *StageScreen;
+// extern bool enableHardMode;
 
-#define THROWWAIT 1 //Unused. -RedStoneMatt 11/10/2020
-#define THROWSHOOT 2 //The thing is that i don't want to remove it from the public code repo because it's like part of the makings of kamek... -RedStoneMatt 11/10/2020
+#define THROWWAIT 1
+#define THROWSHOOT 2
 #define THROWSHOOTREVERSE 3
 
 int imded;
 
 const char* KMarcNameList [] = {
 	"kameck",
-	NULL	
+	NULL
 };
 
 
 class daBossKameck_c : public daBoss {
-	int onCreate();						//Executed when the sprite spawns
-	int onDelete();						//Executed when the sprite is being deleted
-	int onExecute();					//Executed every frame after the onCreate is executed
-	int onDraw();						//Executed every frame, handles the rendering
+	int onCreate();
+	int onDelete();
+	int onExecute();
+	int onDraw();
 
-	mHeapAllocator_c allocator;			//The Heap Allocator
-	m3d::mdl_c bodyModel;				//Kamek's model
-	m3d::mdl_c broomModel;				//Kamek's broom's model
-	m3d::mdl_c shieldModel;				//Kamek's shield's model
-	m3d::anmChr_c animationChr;			//Kamek's "bone" animation
-	m3d::anmChr_c animationBroomChr;	//Kamek's broom's "bone" animation
-	m3d::anmChr_c animationShieldChr;	//Kamek's shield's "bone" animation
-	m3d::anmClr_c animationClr;			//Kamek's "color" animation
-	m3d::anmTexSrt_c animationTexSrt;	//Kamek's shield's "texture" animation
-	nw4r::g3d::ResFile resFile;			//kameck.arc -> kameck.brres
+	mHeapAllocator_c allocator;
+	m3d::mdl_c bodyModel;
+	m3d::mdl_c broomModel;
+	m3d::mdl_c shieldModel;
+	m3d::anmChr_c animationChr;
+	m3d::anmChr_c animationBroomChr;
+	m3d::anmChr_c animationShieldChr;
+	m3d::anmClr_c animationClr;
+	m3d::anmTexSrt_c animationTexSrt;
+	nw4r::g3d::ResFile resFile;
 	mMtx shieldMatrix;
 	ActivePhysics::Info HitMeBaby;
 	ActivePhysics::Info HitMyShieldBaby;
 
-	VEC3 initialMainPos;				//Initial position at the top of the room
-	VEC3 shieldScale;					//Kamek's shield scale
+	VEC3 initialMainPos;
+	VEC3 shieldScale;
 
-	int timer;							//Timer
-	char dying;							//Is Kamek dying. 1 = Yup | 0 = Nope
-	char damage;						//Total damages
-	char isInvulnerable;				//True if the boss can't be hit
-	int phase;							//Which phase is the current one
-	bool isBroomInvisible;				//True if Kamek's broom is invisible
-	bool stopAutoUpdate;				//True to stop the automatic resetting of the "bone" animations when they're done
-	int spawningtimer;					//Another timer
-	int attacktimer;					//Another one
-	int fiveshoottimer;					//Yet a different timer
-	bool isVisible;						//True if Kamek is visible
-	int doOneTime;						//Variable to be able to do only once something in the Execute-typed functions
-	int shootingtimer;					//Still a timer
-	int appearingtimer;					//This one isn't the same timer
-	int damagecounter;					//Total damage bone animations done
-	int whichanim;						//Which animation is the current one
-	int fiveshootdirection;				//Direction of the five shoot attack. 1 = right | -1 = left
-	int damagetimer;					//YES THIS IS ANOTHER ONE
-	int fiveshootvariation;				//How many magic bullets to shoot. 0 = 3 | 1 = 4
-	int currentattack;					//What attack are we currently on. 0 = NormalShoot | 1 = DoFiveFlyingShots
-	int freezingchargingtimer;			//I love timers
-	int freezingcounter;				//Action counter for the FreezePlayers attack
-	bool playerStunned[4];				//Which players are stunned
-	bool aremybulletsspawned;			//True if the ShotFromCorner's bullets were shoot
-	int shotfromcornerdirection;		//direction used in the ShotFromCorner state. 0 = left | 1 = right
-	int isridewantanimation;			//True if the current "bone" animation is the ride_wand "bone" animation
-	int howmuchdidishoot;				//How much bullets were shoot in the ShotFromCorner state.
-	int original_4;						//Outro stuff original flags
-	int original_8;						//Outro stuff original flags
-	int original_m;						//Outro stuff original flags
-	bool doAttackNextRefresh;			//Will the next attack be done at the next animation end
-	bool isShieldVisible;				//True if Kamek's shield is visible
-	int shieldTimer;					//Guess what ? A timer !
-	int secondShieldTimer;				//I wonder what can it be... Maybe a timer ?
-	bool goBackToDamage;				//Used to go back to the Damage state after a DoFiveFlyingShots instead of going to the Attack state
-	int waitAnotherSecond;				//Jeez
-	bool arePlayersOnGround;			//For the panfare in the Outro state
+	int timer;
+	char dying;
+	char damage;
+	char isInvulnerable;
+	int phase;
+	bool isBroomInvisible;
+	bool stopAutoUpdate;
+	int spawningtimer;
+	int attacktimer;
+	int fiveshoottimer;
+	bool isVisible;
+	int doOneTime;
+	int shootingtimer;
+	int appearingtimer;
+	int damagecounter;
+	int whichanim;
+	int fiveshootdirection;
+	int damagetimer;
+	int fiveshootvariation;
+	int currentattack;
+	int freezingchargingtimer;
+	int freezingcounter;
+	bool playerStunned[4];
+	bool aremybulletsspawned;
+	int shotfromcornerdirection;
+	int isridewantanimation;
+	int howmuchdidishoot;
+	int original_4;
+	int original_8;
+	int original_m;
+	bool doAttackNextRefresh;
+	bool isShieldVisible;
+	int shieldTimer;
+	int secondShieldTimer;
+	bool goBackToDamage;
+	int waitAnotherSecond;
+	bool arePlayersOnGround;
 	int playerOnGround[4];
-	dStageActor_c *trampolineWall1;		//Trampoline Wall used by Kamek's shield
-	dStageActor_c *trampolineWall2;		//Trampoline Wall used by Kamek's shield
-	dStageActor_c *trampolineWall3;		//Trampoline Wall used by Kamek's shield
-	dStageActor_c *magicplateform;		//Kamek's Magic Platform
-	VEC3 magicPos;						//Kamek's Magic Platform's position
-	
+	dStageActor_c *trampolineWall1;
+	dStageActor_c *trampolineWall2;
+	dStageActor_c *trampolineWall3;
+	dStageActor_c *magicplateform;
+	VEC3 magicPos;
+
 	static daBossKameck_c *build();
 
-	void bindAnimChr_and_setUpdateRate(const char* name, int unk, float unk2, float rate, bool isBroom);	//Binds a "bone" animation (CHR) to either Kamek's broom or Kamek himself
-	void bindAnimClr_and_setUpdateRate(const char* name, int unk, float unk2, float rate);					//Binds a "color" animation (CLR) to Kamek
-	void bindAnimToShield();																				//Binds a "bone" animation (CHR) and a "texture" animation to Kamek's Shield
-	void setupBodyModel();																					//Setup the required models
-	void updateModelMatrices();																				//Update the models' positions, scales and rotations
+	void bindAnimChr_and_setUpdateRate(const char* name, int unk, float unk2, float rate, bool isBroom);
+	void bindAnimClr_and_setUpdateRate(const char* name, int unk, float unk2, float rate);
+	void bindAnimToShield();
+	void setupBodyModel();
+	void updateModelMatrices();
 
-	bool doDisappear(int timer);																			//Make kamek disappear using its disappear animation
-	void doAppear(int timer);																				//Make kamek appear using its appear animation
+	bool doDisappear(int timer);
+	void doAppear(int timer);
 
-	void stunPlayers();																						//Stun the players on the ground
-	void unstunPlayers();																					//Unstun the stunned players
+	void stunPlayers();
+	void unstunPlayers();
 
-	void createShield(int timer);																			//Make Kamek's shield appear
-	void removeShield(int timer);																			//Make Kamek's shield disappear
+	void createShield(int timer);
+	void removeShield(int timer);
 
-	void changeBroomVisibility(bool visibility);															//Make Kamek's broom appear or not
+	void changeBroomVisibility(bool visibility);
 
-	void playerCollision(ActivePhysics *apThis, ActivePhysics *apOther);									//Executed when the player touches Kamek
-	void yoshiCollision(ActivePhysics *apThis, ActivePhysics *apOther);										//Executed when yoshi touches Kamek
+	void playerCollision(ActivePhysics *apThis, ActivePhysics *apOther);
+	void yoshiCollision(ActivePhysics *apThis, ActivePhysics *apOther);
 
-	bool collisionCat3_StarPower(ActivePhysics *apThis, ActivePhysics *apOther);							//Executed when a starman player touches Kamek
-	bool collisionCat1_Fireball_E_Explosion(ActivePhysics *apThis, ActivePhysics *apOther);					//Executed when a fireball touches Kamek
-	bool collisionCat2_IceBall_15_YoshiIce(ActivePhysics *apThis, ActivePhysics *apOther);					//Executed when an iceball touches Kamek
-	bool collisionCat7_GroundPound(ActivePhysics *apThis, ActivePhysics *apOther);							//Executed when Kamek is goundpounded by the player
-	bool collisionCat7_GroundPoundYoshi(ActivePhysics *apThis, ActivePhysics *apOther);						//Executed when Kamek is goundpounded by yoshi
-	bool collisionCat9_RollingObject(ActivePhysics *apThis, ActivePhysics *apOther);						//Executed when a rolling object (such as a shell) touches Kamek
-	bool collisionCat13_Hammer(ActivePhysics *apThis, ActivePhysics *apOther);								//Executed when a hammer touches Kamek
-	bool collisionCat14_YoshiFire(ActivePhysics *apThis, ActivePhysics *apOther);							//Executed when a fireball spli by yoshi touches Kamek
-	bool collisionCatA_PenguinMario(ActivePhysics *apThis, ActivePhysics *apOther);							//Executed when penguin mario touches Kamek
+	bool collisionCat3_StarPower(ActivePhysics *apThis, ActivePhysics *apOther);
+	bool collisionCat1_Fireball_E_Explosion(ActivePhysics *apThis, ActivePhysics *apOther);
+	bool collisionCat2_IceBall_15_YoshiIce(ActivePhysics *apThis, ActivePhysics *apOther);
+	bool collisionCat7_GroundPound(ActivePhysics *apThis, ActivePhysics *apOther);
+	bool collisionCat7_GroundPoundYoshi(ActivePhysics *apThis, ActivePhysics *apOther);
+	bool collisionCat9_RollingObject(ActivePhysics *apThis, ActivePhysics *apOther);
+	bool collisionCat13_Hammer(ActivePhysics *apThis, ActivePhysics *apOther);
+	bool collisionCat14_YoshiFire(ActivePhysics *apThis, ActivePhysics *apOther);
+	bool collisionCatA_PenguinMario(ActivePhysics *apThis, ActivePhysics *apOther);
 
-	USING_STATES(daBossKameck_c);			//State Declaring for daBossKameck_c
-	DECLARE_STATE(Appear);					//Appearing State
-	DECLARE_STATE(Spawn);					//Spawing State
-	DECLARE_STATE(Attack);					//Attack Choosing State
-	DECLARE_STATE(NormalShoot);				//Magic Bullet Shooting State
-	DECLARE_STATE(DoFiveFlyingShots);		//Multiple Magic Bullet Shoot by Flying Kamek State
-	DECLARE_STATE(FreezePlayers);			//Player Freezing State
-	DECLARE_STATE(ShootFromBottomCorners);	//Multiple Magic Bullet Shoot from the bottom corners by flying Kamek State
-	DECLARE_STATE(ShootFromTopCorners);		//Multiple Magic Bullet Shoot from the top corners by flying Kamek State
-	DECLARE_STATE(Damage);					//Damage State
-	DECLARE_STATE(ChangePhase);				//Phase Changing State
-	DECLARE_STATE(Outro);					//Outro State
+	USING_STATES(daBossKameck_c);
+	DECLARE_STATE(Appear);
+	DECLARE_STATE(Spawn);
+	DECLARE_STATE(Attack);
+	DECLARE_STATE(NormalShoot);
+	DECLARE_STATE(DoFiveFlyingShots);
+	DECLARE_STATE(FreezePlayers);
+	DECLARE_STATE(ShootFromBottomCorners);
+	DECLARE_STATE(ShootFromTopCorners);
+	DECLARE_STATE(Damage);
+	DECLARE_STATE(ChangePhase);
+	DECLARE_STATE(Outro);
 };
 
 
@@ -145,75 +140,75 @@ daBossKameck_c *daBossKameck_c::build() {
 }
 
 
-														//State Creating for daBossKameck_c
-CREATE_STATE(daBossKameck_c, Appear);					//Appearing State
-CREATE_STATE(daBossKameck_c, Spawn);					//Spawing State
-CREATE_STATE(daBossKameck_c, Attack);					//Attack Choosing State
-CREATE_STATE(daBossKameck_c, NormalShoot);				//Magic Bullet Shooting State
-CREATE_STATE(daBossKameck_c, DoFiveFlyingShots);		//Multiple Magic Bullet Shoot by Flying Kamek State
-CREATE_STATE(daBossKameck_c, FreezePlayers);			//Player Freezing State
-CREATE_STATE(daBossKameck_c, ShootFromBottomCorners);	//Multiple Magic Bullet Shoot from the bottom corners by flying Kamek State
-CREATE_STATE(daBossKameck_c, ShootFromTopCorners);	//Multiple Magic Bullet Shoot from the top corners by flying Kamek State
-CREATE_STATE(daBossKameck_c, Damage);					//Damage State
-CREATE_STATE(daBossKameck_c, ChangePhase);				//Phase Changing State
-CREATE_STATE(daBossKameck_c, Outro);					//Outro State
+
+CREATE_STATE(daBossKameck_c, Appear);
+CREATE_STATE(daBossKameck_c, Spawn);
+CREATE_STATE(daBossKameck_c, Attack);
+CREATE_STATE(daBossKameck_c, NormalShoot);
+CREATE_STATE(daBossKameck_c, DoFiveFlyingShots);
+CREATE_STATE(daBossKameck_c, FreezePlayers);
+CREATE_STATE(daBossKameck_c, ShootFromBottomCorners);
+CREATE_STATE(daBossKameck_c, ShootFromTopCorners);
+CREATE_STATE(daBossKameck_c, Damage);
+CREATE_STATE(daBossKameck_c, ChangePhase);
+CREATE_STATE(daBossKameck_c, Outro);
 
 
-void daBossKameck_c::playerCollision(ActivePhysics *apThis, ActivePhysics *apOther) {						//Executed when the player touches Kamek
+void daBossKameck_c::playerCollision(ActivePhysics *apThis, ActivePhysics *apOther) {
 	if(!isShieldVisible && !isInvulnerable) {
-		char hitType = usedForDeterminingStatePress_or_playerCollision(this, apThis, apOther, 2);			//Get how was Kamek hit
-		if(hitType == 1 || hitType == 3) {																	//If it was hit by a regular jump or a spin jump
-			this->playEnemyDownSound1();																	//Play enemy hurting sound
-			this->damage++;																					//Increase the damage count by one
-			if(this->damage < 6) {																			//If the damages are under 6
-				if(this->damage == 3) {																		//If it's the 3rd damage
-					this->phase++;																			//Switch to phase 2
+		char hitType = usedForDeterminingStatePress_or_playerCollision(this, apThis, apOther, 2);
+		if(hitType == 1 || hitType == 3) {
+			this->playEnemyDownSound1();
+			this->damage++;
+			if(this->damage < 6) {
+				if(this->damage == 3) {
+					this->phase++;
 				}
 				this->isInvulnerable = true;
 				nw4r::snd::SoundHandle damageHandle;
 				PlaySoundWithFunctionB4(SoundRelatedClass, &damageHandle, ((this->damage < 4) ? SE_VOC_KMC_DAMAGE_L1 : SE_VOC_KMC_DAMAGE_L2), 1);
-				doStateChange(&StateID_Damage);																//Go to the Damage State
+				doStateChange(&StateID_Damage);
 			}
-			if(this->damage == 6) {																			//If it's the 6th damage
+			if(this->damage == 6) {
 				nw4r::snd::SoundHandle damageHandle;
 				PlaySoundWithFunctionB4(SoundRelatedClass, &damageHandle, SE_VOC_KMC_DAMAGE_L3, 1);
-				doStateChange(&StateID_Outro);																//Go to the Outro State
+				doStateChange(&StateID_Outro);
 			}
 		}
-		else if(hitType == 0) {																				//If it wasn't hit by the top in any way
-			this->_vf220(apOther->owner);																	//Damage the player
+		else if(hitType == 0) {
+			this->_vf220(apOther->owner);
 		}
 	}
 	else {
 		bouncePlayer(apOther->owner, 4.0f);
 	}
 }
-void daBossKameck_c::yoshiCollision(ActivePhysics *apThis, ActivePhysics *apOther) { 						//Executed when yoshi touches Kamek
-	this->playerCollision(apThis, apOther);																	//Do the same as the player collision
+void daBossKameck_c::yoshiCollision(ActivePhysics *apThis, ActivePhysics *apOther) { 
+	this->playerCollision(apThis, apOther);
 }
 bool daBossKameck_c::collisionCat3_StarPower(ActivePhysics *apThis, ActivePhysics *apOther){
 	return false;
 }
-bool daBossKameck_c::collisionCat1_Fireball_E_Explosion(ActivePhysics *apThis, ActivePhysics *apOther) {	//Executed when a fireball touches Kamek
+bool daBossKameck_c::collisionCat1_Fireball_E_Explosion(ActivePhysics *apThis, ActivePhysics *apOther) {
 	return true;
 }
-bool daBossKameck_c::collisionCat7_GroundPound(ActivePhysics *apThis, ActivePhysics *apOther) {				//Need to document other things.
+bool daBossKameck_c::collisionCat7_GroundPound(ActivePhysics *apThis, ActivePhysics *apOther) {
 	bouncePlayer(apOther->owner, 2.0f);
-	this->playEnemyDownSound1();																			//Play enemy hurting sound
-	this->damage++;																							//Increase the damage count by one
-	if(this->damage < 6) {																					//If the damages are under 6
-		if(this->damage == 3) {																				//If it's the 3rd damage
-			this->phase++;																					//Switch to phase 2
+	this->playEnemyDownSound1();
+	this->damage++;
+	if(this->damage < 6) {
+		if(this->damage == 3) {
+			this->phase++;
 		}
 		this->isInvulnerable = true;
 		nw4r::snd::SoundHandle damageHandle;
 		PlaySoundWithFunctionB4(SoundRelatedClass, &damageHandle, ((this->damage < 4) ? SE_VOC_KMC_DAMAGE_L1 : SE_VOC_KMC_DAMAGE_L2), 1);
-		doStateChange(&StateID_Damage);																		//Go to the Damage State
+		doStateChange(&StateID_Damage);
 	}
-	if(this->damage == 6) {																					//If it's the 6th damage
+	if(this->damage == 6) {
 		nw4r::snd::SoundHandle damageHandle;
 		PlaySoundWithFunctionB4(SoundRelatedClass, &damageHandle, SE_VOC_KMC_DAMAGE_L3, 1);
-		doStateChange(&StateID_Outro);																		//Go to the Outro State
+		doStateChange(&StateID_Outro);
 	}
 	return true;
 }
@@ -242,141 +237,138 @@ bool daBossKameck_c::collisionCatA_PenguinMario(ActivePhysics *apThis, ActivePhy
 
 
 void daBossKameck_c::bindAnimChr_and_setUpdateRate(const char* name, int unk, float unk2, float rate, bool isBroom) { //Binds a "bone" animation (CHR) to either Kamek's broom or Kamek himself
-	if(!isBroom) {																//If not binding to the broom model
-		nw4r::g3d::ResAnmChr anmChr = this->resFile.GetResAnmChr(name);			//Get the "bone" animation by name
-		this->animationChr.bind(&this->bodyModel, anmChr, unk);					//Bind it to Kamek's "bone" animation (this->animationChr)
-		this->bodyModel.bindAnim(&this->animationChr, unk2);					//Bind Kamek's "bone" animation (this->animationChr) to Kamek's model (this->bodyModel)
-		this->animationChr.setUpdateRate(rate);									//Set the update rate of Kamek's "bone" animation
+	if(!isBroom) {
+		nw4r::g3d::ResAnmChr anmChr = this->resFile.GetResAnmChr(name);
+		this->animationChr.bind(&this->bodyModel, anmChr, unk);
+		this->bodyModel.bindAnim(&this->animationChr, unk2);
+		this->animationChr.setUpdateRate(rate);
 	}
-	else {																		//Else (if binding to the broom model)
-		nw4r::g3d::ResAnmChr anmBroomChr = this->resFile.GetResAnmChr(name);	//Get the "bone" animation by name
-		this->animationBroomChr.bind(&this->broomModel, anmBroomChr, unk);		//Bind it to Kamek's Broom's "bone" animation (this->animationBroomChr)
-		this->broomModel.bindAnim(&this->animationBroomChr, unk2);				//Bind Kamek's Broom's "bone" animation (this->animationBroomChr) to the Boom's model (this->broomModel)
-		this->animationBroomChr.setUpdateRate(rate);							//Set the update rate of Kamek's Broom's "bone" animation
+	else {
+		nw4r::g3d::ResAnmChr anmBroomChr = this->resFile.GetResAnmChr(name);
+		this->animationBroomChr.bind(&this->broomModel, anmBroomChr, unk);
+		this->broomModel.bindAnim(&this->animationBroomChr, unk2);
+		this->animationBroomChr.setUpdateRate(rate);
 	}
 }
 
 void daBossKameck_c::bindAnimClr_and_setUpdateRate(const char* name, int unk, float unk2, float rate) { //Binds a "color" animation (CLR) to Kamek
-	nw4r::g3d::ResAnmClr anmRes = this->resFile.GetResAnmClr(name);				//Get the "color" animation by name
-	this->animationClr.bind(&this->bodyModel, anmRes, 0, 0);					//Bind it to Kamek's "color" animation (this->animationClr)
-	this->bodyModel.bindAnim(&this->animationClr, 0.0);							//Bind Kamek's "color" animation (this->animationClr) to Kamek's model (this->bodyModel)
+	nw4r::g3d::ResAnmClr anmRes = this->resFile.GetResAnmClr(name);
+	this->animationClr.bind(&this->bodyModel, anmRes, 0, 0);
+	this->bodyModel.bindAnim(&this->animationClr, 0.0);
 }
 
 void daBossKameck_c::bindAnimToShield() { //Binds the "float" bone animation and texture animation to Kamek's shield
-	nw4r::g3d::ResAnmChr anmShieldChr = this->resFile.GetResAnmChr("float");	//Get the "bone" animation by name ("float")
-	this->animationShieldChr.bind(&this->shieldModel, anmShieldChr, 1);			//Bind it to Kamek's shield's "bone" animation (this->animationShieldChr)
-	this->shieldModel.bindAnim(&this->animationShieldChr, 0);					//Bind Kamek's shield's "bone" animation (this->animationShieldChr) to the Shield's model (this->shieldModel)
-	this->animationShieldChr.setUpdateRate(1);									//Set the update rate of Kamek's shield's "bone" animation to 1
+	nw4r::g3d::ResAnmChr anmShieldChr = this->resFile.GetResAnmChr("float");
+	this->animationShieldChr.bind(&this->shieldModel, anmShieldChr, 1);
+	this->shieldModel.bindAnim(&this->animationShieldChr, 0);
+	this->animationShieldChr.setUpdateRate(1);
 
 
-	nw4r::g3d::ResAnmTexSrt anmResss = this->resFile.GetResAnmTexSrt("float");	//Get the "texture" animation by name ("float")
-	this->animationTexSrt.bindEntry(&this->shieldModel, anmResss, 0, 0);		//Bind it to Kamek's shield's "texture" animation (this->animationTexSrt)
-	this->shieldModel.bindAnim(&this->animationTexSrt, 0.0);					//Bind Kamek's shield's "texture" animation (this->animationTexSrt) to the Shield's model (this->shieldModel)
+	nw4r::g3d::ResAnmTexSrt anmResss = this->resFile.GetResAnmTexSrt("float");
+	this->animationTexSrt.bindEntry(&this->shieldModel, anmResss, 0, 0);
+	this->shieldModel.bindAnim(&this->animationTexSrt, 0.0);
 }
 
 void daBossKameck_c::setupBodyModel() { //Setup the required models
-	allocator.link(-1, GameHeaps[0], 0, 0x20);												//Link the GameHeap0 allocator
+	allocator.link(-1, GameHeaps[0], 0, 0x20);
 
-	this->resFile.data = getResource("kameck", "g3d/kameck.brres");							//Get the kameck.brres file from kameck.arc from the game files
+	this->resFile.data = getResource("kameck", "g3d/kameck.brres");
 
-	nw4r::g3d::ResMdl mdl = this->resFile.GetResMdl("kameck");								//Get the MDL0 file "kameck" from kameck.brres
-	bodyModel.setup(mdl, &allocator, 0x224, 1, 0);											//Setup that model in Kamek's model (bodyModel)
-	SetupTextures_Boss(&bodyModel, 0);														//Setup its shader (the boss shader in this case)
+	nw4r::g3d::ResMdl mdl = this->resFile.GetResMdl("kameck");
+	bodyModel.setup(mdl, &allocator, 0x224, 1, 0);
+	SetupTextures_Boss(&bodyModel, 0);
 
-	nw4r::g3d::ResMdl broommdl = this->resFile.GetResMdl("kameck_broom");					//Get the MDL0 file "kameck_broom" from kameck.brres
-	broomModel.setup(broommdl, &allocator, 0x224, 1, 0);									//Setup that model in Kamek's Broom's model (broomModel)
-	SetupTextures_Boss(&broomModel, 0);														//Setup its shader (the boss shader in this case)
+	nw4r::g3d::ResMdl broommdl = this->resFile.GetResMdl("kameck_broom");
+	broomModel.setup(broommdl, &allocator, 0x224, 1, 0);
+	SetupTextures_Boss(&broomModel, 0);
 
-	nw4r::g3d::ResMdl shieldmdl = this->resFile.GetResMdl("balloon");						//Get the MDL0 file "balloon" from kameck.brres
-	shieldModel.setup(shieldmdl, &allocator, 0x224, 1, 0);									//Setup that model in Kamek's shield model (shieldModel)
-	SetupTextures_Boss(&shieldModel, 0);													//Setup its shader (the boss shader in this case)
+	nw4r::g3d::ResMdl shieldmdl = this->resFile.GetResMdl("balloon");
+	shieldModel.setup(shieldmdl, &allocator, 0x224, 1, 0);
+	SetupTextures_Boss(&shieldModel, 0);
 
 	bool ret;
-	nw4r::g3d::ResAnmChr anmChr = this->resFile.GetResAnmChr("ride_wait");					//Get the CHR0 animation file "ride_wait" from kameck.brres
-	ret = this->animationChr.setup(mdl, anmChr, &this->allocator, 0);						//Setup it into Kamek's "bone" animation (this->animationChr)
+	nw4r::g3d::ResAnmChr anmChr = this->resFile.GetResAnmChr("ride_wait");
+	ret = this->animationChr.setup(mdl, anmChr, &this->allocator, 0);
 
 	bool rett;
-	nw4r::g3d::ResAnmChr anmBroomChr = this->resFile.GetResAnmChr("ride_wait_broom");		//Get the CHR0 animation file "ride_wait_broom" from kameck.brres
-	rett = this->animationBroomChr.setup(broommdl, anmBroomChr, &this->allocator, 0);		//Setup it into Kamek's Broom's "bone" animation (this->animationBroomChr)
+	nw4r::g3d::ResAnmChr anmBroomChr = this->resFile.GetResAnmChr("ride_wait_broom");
+	rett = this->animationBroomChr.setup(broommdl, anmBroomChr, &this->allocator, 0);
 
 	bool rettt;
-	nw4r::g3d::ResAnmChr anmShieldChr = this->resFile.GetResAnmChr("float");				//Get the CHR0 animation file "float" from kameck.brres
-	rettt = this->animationShieldChr.setup(shieldmdl, anmShieldChr, &this->allocator, 0);	//Setup it into Kamek's sheld's "bone" animation (this->animationShieldChr)
-	
-	nw4r::g3d::ResAnmClr anmRess = this->resFile.GetResAnmClr("wand");						//Get the CLR0 animation file "wand" from kameck.brres
-	this->animationClr.setup(mdl, anmRess, &this->allocator, 0, 1);							//Setup it into Kamek's "color" animation (this->animationClr)
-	this->animationClr.bind(&this->bodyModel, anmRess, 0, 0);								//Bind it into Kamek's "color" animation (this->animationClr)
-	this->bodyModel.bindAnim(&this->animationClr, 0.0);										//Bind Kamek's "color" animation (this->animationClr) to Kamek's model (this->bodyModel)
+	nw4r::g3d::ResAnmChr anmShieldChr = this->resFile.GetResAnmChr("float");
+	rettt = this->animationShieldChr.setup(shieldmdl, anmShieldChr, &this->allocator, 0);
+
+	nw4r::g3d::ResAnmClr anmRess = this->resFile.GetResAnmClr("wand");
+	this->animationClr.setup(mdl, anmRess, &this->allocator, 0, 1);
+	this->animationClr.bind(&this->bodyModel, anmRess, 0, 0);
+	this->bodyModel.bindAnim(&this->animationClr, 0.0);
 
 	bool retttt;
-	nw4r::g3d::ResAnmTexSrt anmSrt = this->resFile.GetResAnmTexSrt("float");				//Get the SRT0 animation file "float" from kameck.brres
-	retttt = this->animationTexSrt.setup(shieldmdl, anmSrt, &this->allocator, 0, 1);		//Setup it into Kamek's shield's "texture" animation (this->animationTexSrt)
+	nw4r::g3d::ResAnmTexSrt anmSrt = this->resFile.GetResAnmTexSrt("float");
+	retttt = this->animationTexSrt.setup(shieldmdl, anmSrt, &this->allocator, 0, 1);
 
-	allocator.unlink();																		//Unlink the GameHeap0 allocator
+	allocator.unlink();
 }
 int daBossKameck_c::onCreate() { //Executed when the sprite spawns
-	setupBodyModel();														//Setup the required models
+	setupBodyModel();
 
 
-	this->scale = (Vec){0.0, 0.0, 0.0};										//Set Kamek's scale to 0
-	this->removeShield(30);													//Remove kamek's shield
+	this->scale = (Vec){0.0, 0.0, 0.0};
+	this->removeShield(30);
 
 
-	HitMeBaby.xDistToCenter = 0.0;											//Set Kamek's Collision's X distance from center to 0
-	HitMeBaby.yDistToCenter = 15.0;											//Set Kamek's Collision's Y distance from center to 15
+	HitMeBaby.xDistToCenter = 0.0;
+	HitMeBaby.yDistToCenter = 15.0;
 
-	HitMeBaby.xDistToEdge = 10.0;											//Set Kamek's Collision's X scale to 10
-	HitMeBaby.yDistToEdge = 15.0;											//Set Kamek's Collision's X scale to 15
+	HitMeBaby.xDistToEdge = 10.0;
+	HitMeBaby.yDistToEdge = 15.0;
 
-	HitMeBaby.category1 = 0x3;												//Ask Treeki if you want to know what that means. it's been years since i try to figure it out and i still don't know.
-	HitMeBaby.category2 = 0x0;												//^
-	HitMeBaby.bitfield1 = 0x4F;												//^
-	HitMeBaby.bitfield2 = 0x8028E;											//^
-	HitMeBaby.unkShort1C = 0;												//^
-	HitMeBaby.callback = &dEn_c::collisionCallback;							//Set the collision callback to the dEn_c's one
-
-
-	this->aPhysics.initWithStruct(this, &HitMeBaby);						//Init the collision
-	this->aPhysics.addToList();												//Add it to the collision list
+	HitMeBaby.category1 = 0x3;
+	HitMeBaby.category2 = 0x0;
+	HitMeBaby.bitfield1 = 0x4F;
+	HitMeBaby.bitfield2 = 0x8028E;
+	HitMeBaby.unkShort1C = 0;
+	HitMeBaby.callback = &dEn_c::collisionCallback;
 
 
-	HitMyShieldBaby.xDistToCenter = 0.0;									//Set Kamek's shield's Collision's X distance from center to 0
-	HitMyShieldBaby.yDistToCenter = 44.0;									//Set Kamek's shield's Collision's Y distance from center to 44
+	this->aPhysics.initWithStruct(this, &HitMeBaby);
+	this->aPhysics.addToList();
 
-	HitMyShieldBaby.xDistToEdge = 22.5;										//Set Kamek's shield's Collision's X scale to 22.5
-	HitMyShieldBaby.yDistToEdge = 3.0;										//Set Kamek's shield's Collision's X scale to 3
 
-	HitMyShieldBaby.category1 = 0x3;										//Ask Treeki if you want to know what that means. it's been years since i try to figure it out and i still don't know.
-	HitMyShieldBaby.category2 = 0x0;										//^
-	HitMyShieldBaby.bitfield1 = 0x4F;										//^
-	HitMyShieldBaby.bitfield2 = 0x8028E;									//^
-	HitMyShieldBaby.unkShort1C = 0;											//^
-	HitMyShieldBaby.callback = &dEn_c::collisionCallback;					//Set the collision callback to the dEn_c's one
+	HitMyShieldBaby.xDistToCenter = 0.0;
+	HitMyShieldBaby.yDistToCenter = 44.0;
 
-	
-	// this->pos.y = this->pos.y + 6;
-	this->rot.x = 0; // X is vertical axis									//Set Kamek's X rotation to 0
-	this->rot.z = 0; // Z is ... an axis >.>								//Set Kamek's Z rotation to 0
+	HitMyShieldBaby.xDistToEdge = 22.5;
+	HitMyShieldBaby.yDistToEdge = 3.0;
 
-	
-	this->speed.x = 0;														//Set Kamek's X speed to 0
-	imded = 0;																//Set Kamek's global death flag to 0
-	this->damage = 0;														//Set Kamek's damages to 0
-	this->isInvulnerable = 0;												//Set Kamek's invulnerable flag to 0 (false)
-	this->disableEatIn();													//Make Kamek not edible by yoshi so cheaters are disappointed
-	this->phase = 1;														//Set Kamek's phase to 1
-	this->isVisible = true;													//Set Kamek's visibility flag to 1
-	this->doAttackNextRefresh = false;										//Set kamek's doAttackNextRefresh flag to false
-	this->goBackToDamage = false;											//Set kamek's goBackToDamage flag to false
+	HitMyShieldBaby.category1 = 0x3;
+	HitMyShieldBaby.category2 = 0x0;
+	HitMyShieldBaby.bitfield1 = 0x4F;
+	HitMyShieldBaby.bitfield2 = 0x8028E;
+	HitMyShieldBaby.unkShort1C = 0;
+	HitMyShieldBaby.callback = &dEn_c::collisionCallback;
 
-	bindAnimChr_and_setUpdateRate("ride_wait", 1, 0.0, 1.0, false);			//Bind the "ride_wait" bone animation to Kamek
-	bindAnimChr_and_setUpdateRate("ride_wait_broom", 1, 0.0, 1.0, true);	//Bind the "ride_wait_broom" bone animation to Kamek's Broom
-	bindAnimClr_and_setUpdateRate("wand", 1, 0.0, 2.0);						//Bind the "wand" color animation to Kamek
-	bindAnimToShield();														//Binds the "float" bone animation and texture animation to Kamek's shield
-		
-	doStateChange(&StateID_Spawn);											//Go in the Spawn state
+	this->rot.x = 0; // X is vertical axis
+	this->rot.z = 0; // Z is ... an axis >.>
 
-	this->onExecute();														//Starts the onExecute loop
+	this->speed.x = 0;
+	imded = 0;
+	this->damage = 0;
+	this->isInvulnerable = 0;
+	this->disableEatIn();
+	this->phase = 1;
+	this->isVisible = true;
+	this->doAttackNextRefresh = false;
+	this->goBackToDamage = false;
+
+	bindAnimChr_and_setUpdateRate("ride_wait", 1, 0.0, 1.0, false);
+	bindAnimChr_and_setUpdateRate("ride_wait_broom", 1, 0.0, 1.0, true);
+	bindAnimClr_and_setUpdateRate("wand", 1, 0.0, 2.0);
+	bindAnimToShield();
+
+	doStateChange(&StateID_Spawn);
+
+	this->onExecute();
 	return true;
 }
 
@@ -385,143 +377,142 @@ int daBossKameck_c::onDelete() { //Executed when the sprite is being deleted
 }
 
 int daBossKameck_c::onExecute() { //Executed every frame after the onCreate is executed
-	acState.execute();															//Execute the current state
-	updateModelMatrices();														//Update the models' positions, scales and rotations
-	bodyModel._vf1C();															//Update the "bone" animation bound to Kamek's model (bodyModel)
-	broomModel._vf1C();															//Update the "bone" animation bound to Kamek's Broom's model (broomModel)
-	shieldModel._vf1C();														//Update the "bone" animation bound to Kamek's shield's model (shieldModel)
+	acState.execute();
+	updateModelMatrices();
+	bodyModel._vf1C();
+	broomModel._vf1C();
+	shieldModel._vf1C();
 
-	if(this->animationChr.isAnimationDone() && !this->stopAutoUpdate) {			//If the current Kamek's "bone" animation is done playing and the stopAutoUpdate flag is disabled
-		this->animationChr.setCurrentFrame(0.0);								//Set the current frame of Kamek's "bone" animation to 0
+	if(this->animationChr.isAnimationDone() && !this->stopAutoUpdate) {
+		this->animationChr.setCurrentFrame(0.0);
 	}
 
-	if(this->animationBroomChr.isAnimationDone() && !this->stopAutoUpdate) {	//If the current Kamek's Broom's "bone" animation is done playing and the stopAutoUpdate flag is disabled
-		this->animationBroomChr.setCurrentFrame(0.0);							//Set the current frame of Kamek's Broom's "bone" animation to 0
+	if(this->animationBroomChr.isAnimationDone() && !this->stopAutoUpdate) {
+		this->animationBroomChr.setCurrentFrame(0.0);
 	}
 
-	if(this->animationShieldChr.isAnimationDone()) {							//If the current Kamek's shield's "bone" animation is done playing
-		this->animationBroomChr.setCurrentFrame(0.0);							//Set the current frame of Kamek's shield's "bone" animation to 0
+	if(this->animationShieldChr.isAnimationDone()) {
+		this->animationBroomChr.setCurrentFrame(0.0);
 	}
 
-	if(this->isShieldVisible) {													//If Kamek's shield is visible
-		this->shieldTimer++;													//Increment the shield timer
-		if(this->shieldTimer > 120) {											//If the shield timer is >120
-			this->removeShield(this->secondShieldTimer);						//Remove the shield progressively using the second shield timer
-			this->secondShieldTimer++;											//Increment the second shield timer
-			if(this->secondShieldTimer > 30) {									//If the second shield timer is >30
-				this->shieldTimer = 0;											//Set the shield timer to 0
-				this->secondShieldTimer = 0;									//Set the second shield timer to 0
-				this->isShieldVisible = false;									//Set the isShieldVisible flag to false
+	if(this->isShieldVisible) {
+		this->shieldTimer++;
+		if(this->shieldTimer > 120) {
+			this->removeShield(this->secondShieldTimer);
+			this->secondShieldTimer++;
+			if(this->secondShieldTimer > 30) {
+				this->shieldTimer = 0;
+				this->secondShieldTimer = 0;
+				this->isShieldVisible = false;
 			}
 		}
 	}
-	
+
 	return true;
 }
 
 
 int daBossKameck_c::onDraw() { //Executed every frame, handles the rendering
-	bodyModel.scheduleForDrawing();			//Shedule Kamek's model (bodyModel) drawing
-	if(this->isBroomInvisible) {			//If Kamek's Broom is visible
-		broomModel.scheduleForDrawing();	//Shedule Kamek's Broom's model (broomModel) drawing
+	bodyModel.scheduleForDrawing();
+	if(this->isBroomInvisible) {
+		broomModel.scheduleForDrawing();
 	}
-	shieldModel.scheduleForDrawing();		//Shedule Kamek's shield's model (shieldModel) drawing
-	this->animationClr.process();			//Process Kamek's "color" animation
-	this->animationTexSrt.process();		//Process Kamek's shield's "texture" animation
+	shieldModel.scheduleForDrawing();
+	this->animationClr.process();
+	this->animationTexSrt.process();
 	return true;
 }
 
 
 void daBossKameck_c::updateModelMatrices() { //Update the models' positions, scales and rotations
-	// This won't work with wrap because I'm lazy.				//This comment was wrote by Treeki, I leave it there because it looks weird otherwise :c
-	matrix.translation(pos.x, pos.y, pos.z);					//Update the main drawing matrix's position with this sprite's position
-	matrix.applyRotationYXZ(&rot.x, &rot.y, &rot.z);			//Update the main drawing matrix's rotation with this sprite's rotation
+	matrix.translation(pos.x, pos.y, pos.z);
+	matrix.applyRotationYXZ(&rot.x, &rot.y, &rot.z);
 
-	bodyModel.setDrawMatrix(matrix);							//Set Kamek's model (bodyModel) draw matrix to the main drawing matrix
-	bodyModel.setScale(&scale);									//Set Kamek's model's (bodyModel) scale to this sprite's scale
-	bodyModel.calcWorld(false);									//Ask Treeki if you want to know what that means. it's been years since i try to figure it out and i still don't know.
+	bodyModel.setDrawMatrix(matrix);
+	bodyModel.setScale(&scale);
+	bodyModel.calcWorld(false);
 
-	if(this->isBroomInvisible) {								//If Kamek's Broom is visible
-		broomModel.setDrawMatrix(matrix);						//Set Kamek's Broom's model (broomModel) draw matrix to the main drawing matrix
-		broomModel.setScale(&scale);							//Set Kamek's Broom's model's (broomModel) scale to this sprite's scale
-		broomModel.calcWorld(false);							//Ask Treeki if you want to know what that means. it's been years since i try to figure it out and i still don't know.
+	if(this->isBroomInvisible) {
+		broomModel.setDrawMatrix(matrix);
+		broomModel.setScale(&scale);
+		broomModel.calcWorld(false);
 	}
 
-	shieldMatrix.translation(pos.x, pos.y + 20, pos.z + 200);	//Update the shield drawing matrix's position with this sprite's position but with some edits on it (+20 on Y position, +200 on Z position)
-	shieldMatrix.applyRotationYXZ(&rot.x, &rot.y, &rot.z);		//Update the shield drawing matrix's rotation with this sprite's rotation
-	shieldModel.setDrawMatrix(shieldMatrix);					//Set Kamek's shield's model (shieldModel) draw matrix to the shield drawing matrix
-	shieldModel.setScale(&shieldScale);							//Set Kamek's shield's model's (shieldModel) scale to the shield's scale
-	shieldModel.calcWorld(false);								//Ask Treeki if you want to know what that means. it's been years since i try to figure it out and i still don't know.
+	shieldMatrix.translation(pos.x, pos.y + 20, pos.z + 200);
+	shieldMatrix.applyRotationYXZ(&rot.x, &rot.y, &rot.z);
+	shieldModel.setDrawMatrix(shieldMatrix);
+	shieldModel.setScale(&shieldScale);
+	shieldModel.calcWorld(false);
 }
 
 void daBossKameck_c::changeBroomVisibility(bool visibility) { //Make Kamek's broom appear or not
-	bindAnimChr_and_setUpdateRate(((visibility) ? "ride_wait_broom" : "disappear_broom"), 1, 0.0, 1.0, true);	//Bind to Kamek's Broom either the "ride_wait_broom" CHR0 animation or the "disappear_broom" CHR0 animation
-	this->isBroomInvisible = visibility;																		//Set the isBroomInvisible flag
+	bindAnimChr_and_setUpdateRate(((visibility) ? "ride_wait_broom" : "disappear_broom"), 1, 0.0, 1.0, true);
+	this->isBroomInvisible = visibility;
 }
 
 void daBossKameck_c::createShield(int timer) { //Make Kamek's shield appear
-	if(timer < 30) {																								//If the timer is <30
-		this->shieldScale.x += 0.04;																				//Add 0.04 to Kamek's shield's scale on the X axis
-		this->shieldScale.y += 0.04;																				//Add 0.04 to Kamek's shield's scale on the Y axis
-		this->shieldScale.z += 0.04;																				//Add 0.04 to Kamek's shield's scale on the Z axis
+	if(timer < 30) {
+		this->shieldScale.x += 0.04;
+		this->shieldScale.y += 0.04;
+		this->shieldScale.z += 0.04;
 	}
-	if(timer == 30) {																								//If the timer is 30
-		this->shieldScale = (Vec){1.3, 1.3, 1.3};																	//Set Kamek's shield's scale to 1.3 on all axes
-		VEC3 basePos = {this->initialMainPos.x - 8, this->initialMainPos.y + 44, this->initialMainPos.z + 200};		//Set the basePos VEC3 to this->initialMainPos but with some edits (-8 on X position, +44 on Y position, +200 on Z position)
-		VEC3 spawningPos1 = {basePos.x, basePos.y, basePos.z};														//Set the first spawning position VEC3 to the basePos VEC3
-		VEC3 spawningPos2 = {basePos.x - 16, basePos.y, basePos.z};													//Set the second spawning position VEC3 to the basePos VEC3 but with some edits (-16 on X position)
-		VEC3 spawningPos3 = {basePos.x + 16, basePos.y, basePos.z};													//Set the third spawning position VEC3 to the basePos VEC3 but with some edits (+16 on X position)
-		S16Vec nullRot = {0,0,0};																					//Set the nullRot S16Vec to 0 on all axes
-		trampolineWall1 = createChild(EN_TRPLN_WALL, this, (0 | (2 << 0)), &spawningPos1, &nullRot, 0);				//Create a Trampoline Wall with 2 on the nybble 12 of its settings, the first spawning position as its position, nullRot as its rotation and 0 as its layer
-		trampolineWall2 = createChild(EN_TRPLN_WALL, this, (0 | (2 << 0)), &spawningPos2, &nullRot, 0);				//Create a Trampoline Wall with 2 on the nybble 12 of its settings, the second spawning position as its position, nullRot as its rotation and 0 as its layer
-		trampolineWall3 = createChild(EN_TRPLN_WALL, this, (0 | (2 << 0)), &spawningPos3, &nullRot, 0);				//Create a Trampoline Wall with 2 on the nybble 12 of its settings, the third spawning position as its position, nullRot as its rotation and 0 as its layer
-		trampolineWall1->scale = (Vec){0.0, 0.0, 0.0};																//Set the first Trampoline Wall's scale to 0 on all axes
-		trampolineWall2->scale = (Vec){0.0, 0.0, 0.0};																//Set the second Trampoline Wall's scale to 0 on all axes
-		trampolineWall3->scale = (Vec){0.0, 0.0, 0.0};																//Set the third Trampoline Wall's scale to 0 on all axes
-		this->aPhysics.removeFromList();																			//Remove Kamek's collision from the collision list
-		this->aPhysics.initWithStruct(this, &HitMyShieldBaby);														//Initiate it with the shield collision instead
-		this->aPhysics.addToList();																					//Readd Kamek's collision to the collision list
+	if(timer == 30) {
+		this->shieldScale = (Vec){1.3, 1.3, 1.3};
+		VEC3 basePos = {this->initialMainPos.x - 8, this->initialMainPos.y + 44, this->initialMainPos.z + 200};
+		VEC3 spawningPos1 = {basePos.x, basePos.y, basePos.z};
+		VEC3 spawningPos2 = {basePos.x - 16, basePos.y, basePos.z};
+		VEC3 spawningPos3 = {basePos.x + 16, basePos.y, basePos.z};
+		S16Vec nullRot = {0,0,0};
+		trampolineWall1 = createChild(EN_TRPLN_WALL, this, (0 | (2 << 0)), &spawningPos1, &nullRot, 0);
+		trampolineWall2 = createChild(EN_TRPLN_WALL, this, (0 | (2 << 0)), &spawningPos2, &nullRot, 0);
+		trampolineWall3 = createChild(EN_TRPLN_WALL, this, (0 | (2 << 0)), &spawningPos3, &nullRot, 0);
+		trampolineWall1->scale = (Vec){0.0, 0.0, 0.0};
+		trampolineWall2->scale = (Vec){0.0, 0.0, 0.0};
+		trampolineWall3->scale = (Vec){0.0, 0.0, 0.0};
+		this->aPhysics.removeFromList();
+		this->aPhysics.initWithStruct(this, &HitMyShieldBaby);
+		this->aPhysics.addToList();
 	}
 }
 
 void daBossKameck_c::removeShield(int timer) { //Make Kamek's shield disappear
-	if(timer == 1) {											//If the timer is 1
-		if(this->isShieldVisible) {								//If Kamek's shield is visible
-			this->aPhysics.removeFromList();					//Remove Kamek's collision from the collision list
-			this->aPhysics.initWithStruct(this, &HitMeBaby);	//Initiate it with the main collision instead
-			this->aPhysics.addToList();							//Readd Kamek's collision to the collision list
-			trampolineWall1->Delete(1);							//Delete the first Trampoline Wall
-			trampolineWall2->Delete(1);							//Delete the second Trampoline Wall
-			trampolineWall3->Delete(1);							//Delete the third Trampoline Wall
+	if(timer == 1) {
+		if(this->isShieldVisible) {
+			this->aPhysics.removeFromList();
+			this->aPhysics.initWithStruct(this, &HitMeBaby);
+			this->aPhysics.addToList();
+			trampolineWall1->Delete(1);
+			trampolineWall2->Delete(1);
+			trampolineWall3->Delete(1);
 		}
 	}
-	if(timer < 30) {											//If the timer is <30
-		this->shieldScale.x -= 0.04;							//Subtract 0.04 to Kamek's shield's scale on the X axis
-		this->shieldScale.y -= 0.04;							//Subtract 0.04 to Kamek's shield's scale on the Y axis
-		this->shieldScale.z -= 0.04;							//Subtract 0.04 to Kamek's shield's scale on the Z axis
+	if(timer < 30) {
+		this->shieldScale.x -= 0.04;
+		this->shieldScale.y -= 0.04;
+		this->shieldScale.z -= 0.04;
 	}
-	if(timer == 30) {											//If the timer is 30
-		this->shieldScale = (Vec){0.0, 0.0, 0.0};				//Set Kamek's shield's scale to 0 on all axes
-		this->isShieldVisible = false;							//Set the isShieldVisible flag to false
-		this->isInvulnerable = false;							//Set the isInvulnerable flag to false
+	if(timer == 30) {
+		this->shieldScale = (Vec){0.0, 0.0, 0.0};
+		this->isShieldVisible = false;
+		this->isInvulnerable = false;
 	}
 }
 
 bool daBossKameck_c::doDisappear(int timer) { //Make kamek disappear using its disappear animation
-	if(this->isVisible) {																				//If Kamek is visible
-		if(timer == 0) {																				//If the timer is 0
-			nw4r::snd::SoundHandle disappearHandle;														//Create a SoundHandle for Kamek's Disappearing SFX
-			PlaySoundWithFunctionB4(SoundRelatedClass, &disappearHandle, SE_BOSS_KAMECK_DISAPP, 1);		//Play Kamek's Disappearing SFX using the previously created SoundHandle
-			changeBroomVisibility(false);																//Make Kamek's Broom invisible
-			bindAnimChr_and_setUpdateRate("disappear", 1, 0.0, 1.0, false);								//Bind the "disappear" bone animation to Kamek
+	if(this->isVisible) {
+		if(timer == 0) {
+			nw4r::snd::SoundHandle disappearHandle;
+			PlaySoundWithFunctionB4(SoundRelatedClass, &disappearHandle, SE_BOSS_KAMECK_DISAPP, 1);
+			changeBroomVisibility(false);
+			bindAnimChr_and_setUpdateRate("disappear", 1, 0.0, 1.0, false);
 		}
-		if(timer > 0) {																					//If the timer is >0
-			stopAutoUpdate = true;																		//Stop the automatic CHR0 animation update
-			if(this->animationChr.isAnimationDone()) {													//When the current Kamek's "bone" animation is done (in this case, the "disappear" bone animation)
-				stopAutoUpdate = false;																	//Re-enable the automatic CHR0 animation update
-				isVisible = false;																		//Set Kamek's visibility flag (isVisible) to false
-				if(this->magicplateform != 0) {															//If there is a Magic Platform
-					this->magicplateform->Delete(1);													//Delete it
+		if(timer > 0) {
+			stopAutoUpdate = true;
+			if(this->animationChr.isAnimationDone()) {
+				stopAutoUpdate = false;
+				isVisible = false;
+				if(this->magicplateform != 0) {
+					this->magicplateform->Delete(1);
 				}
 				return true;
 			}
@@ -536,25 +527,25 @@ bool daBossKameck_c::doDisappear(int timer) { //Make kamek disappear using its d
 }
 
 void daBossKameck_c::doAppear(int timer) { //Make kamek appear using its appear animation
-	if(!this->isVisible) {																					//If Kamek isn't visible
-		if(timer == 0) {																					//If the timer is 0
-			this->rot.y = 0;																				//Set Kamek's Y Rotation to 0
-			this->pos = this->initialMainPos;																//Set Kamek's position to this->initialMainPos
-			nw4r::snd::SoundHandle appearHandle;															//Create a SoundHandle for Kamek's Appearing SFX
-			PlaySoundWithFunctionB4(SoundRelatedClass, &appearHandle, SE_BOSS_KAMECK_APP, 1);				//Play Kamek's Appearing SFX using the previously created SoundHandle
-			changeBroomVisibility(false);																	//Make Kamek's Broom invisible
-			S16Vec nullRot = {0,0,0};																		//Set the nullRot S16Vec to 0 on all axes
-			magicplateform = createChild(EN_SLIP_PENGUIN, this, 16777217, &this->magicPos, &nullRot, 0);	//Create a Magic Platform with some settings that are too long to detail, this->magicPos as its position, nullRot as its rotation and 0 as its layer
-			bindAnimChr_and_setUpdateRate("appear", 1, 0.0, 1.0, false);									//Bind the "appear" bone animation to Kamek
+	if(!this->isVisible) {
+		if(timer == 0) {
+			this->rot.y = 0;
+			this->pos = this->initialMainPos;
+			nw4r::snd::SoundHandle appearHandle;
+			PlaySoundWithFunctionB4(SoundRelatedClass, &appearHandle, SE_BOSS_KAMECK_APP, 1);
+			changeBroomVisibility(false);
+			S16Vec nullRot = {0,0,0};
+			magicplateform = createChild(EN_SLIP_PENGUIN, this, 16777217, &this->magicPos, &nullRot, 0);
+			bindAnimChr_and_setUpdateRate("appear", 1, 0.0, 1.0, false);
 		}
-		if(timer > 0) {																						//If the timer is >0
-			stopAutoUpdate = true;																			//Stop the automatic CHR0 animation update
-			if(this->animationChr.isAnimationDone()) {														//When the current Kamek's "bone" animation is done (in this case, the "appear" bone animation)
-				stopAutoUpdate = false;																		//Re-enable the automatic CHR0 animation update
-				isVisible = true;																			//Set Kamek's visibility flag (isVisible) to true
-				bindAnimChr_and_setUpdateRate("throw_st_wait", 1, 0.0, 1.0, false);							//Bind the "throw_st_wait" bone animation to Kamek
-				changeBroomVisibility(false);																//Make Kamek's Broom invisible
-				doStateChange(&StateID_Attack);																//Go to the Attack State
+		if(timer > 0) {
+			stopAutoUpdate = true;
+			if(this->animationChr.isAnimationDone()) {
+				stopAutoUpdate = false;
+				isVisible = true;
+				bindAnimChr_and_setUpdateRate("throw_st_wait", 1, 0.0, 1.0, false);
+				changeBroomVisibility(false);
+				doStateChange(&StateID_Attack);
 				return;
 			}
 			else {
@@ -579,8 +570,7 @@ void daBossKameck_c::doAppear(int timer) { //Make kamek appear using its appear 
 /*Spawn State*/
 /*************/
 
-void daBossKameck_c::beginState_Spawn() {
-
+void daBossKameck_c::beginState_Spawn() { 
 }
 
 void daBossKameck_c::executeState_Spawn() { 
@@ -629,11 +619,10 @@ void daBossKameck_c::endState_Appear() {
 /**************/
 /*Attack State*/
 /**************/
-//THIS PART IS FROM THE GIANT GOOMBA AAAAAAAAAAAAAAAAAAAAAAAAAAAAA. -RedStoneMatt 11/10/2020
 extern "C" void stunPlayer(void *, int);
 extern "C" void unstunPlayer(void *);
 
-void daBossKameck_c::stunPlayers() { 
+void daBossKameck_c::stunPlayers() {
 	for (int i = 0; i < 4; i++) {
 		playerStunned[i] = false;
 
@@ -658,7 +647,6 @@ void daBossKameck_c::unstunPlayers() {
 		}
 	}
 }
-//END OF THE GIANT GOOMBA PART AAAAAAAAAAAAAAAAAAAAAAAAAAAAA. -RedStoneMatt 11/10/2020
 
 void daBossKameck_c::beginState_Attack() { 
 	this->stopAutoUpdate = false;
@@ -672,7 +660,8 @@ void daBossKameck_c::beginState_Attack() {
 void daBossKameck_c::executeState_Attack() { 
 	this->attacktimer++;
 	int waitingtime[5] = {150, 180, 110, 180, 180};
-	if(this->attacktimer == waitingtime[this->currentattack]) {
+	// if(this->attacktimer == waitingtime[this->currentattack] / ((int)enableHardMode + 1)) { //Waiting time is divided by 2 when Hard Mode is enabled (disabled)
+	if(this->attacktimer == waitingtime[this->currentattack]) { //Waiting time is divided by 2 when Hard Mode is enabled
 		this->doAttackNextRefresh = true;
 		this->stopAutoUpdate = true;
 	}
@@ -682,7 +671,13 @@ void daBossKameck_c::executeState_Attack() {
 		this->doAttackNextRefresh = false;
 		unstunPlayers();
 		if(this->phase == 1) {
+			//Here are the odds:
+			//Normal Mode -> NormalShoot:       90% chance
+			//               DoFiveFlyingShots: 10% chance
+			//Hard Mode   -> NormalShoot:       50% chance (disabled)
+			//               DoFiveFlyingShots: 50% chance (disabled)
 			int whichAttack = GenerateRandomNumber(100);
+			// if(whichAttack > ((enableHardMode) ? 50 : 10)) {
 			if(whichAttack > 10) {
 				this->currentattack = 0;
 				doStateChange(&StateID_NormalShoot);
@@ -693,19 +688,34 @@ void daBossKameck_c::executeState_Attack() {
 			}
 		}
 		if(this->phase == 2) {
+			//Here are the odds:
+			//Normal Mode -> FreezePlayers:          75% chance
+			//               ShootFromBottomCorners: 15% chance
+			//               ShootFromTopCorners:    10% chance
+			//Hard Mode   -> FreezePlayers:          50% chance (disabled)
+			//               ShootFromBottomCorners: 15% chance (disabled)
+			//               ShootFromTopCorners:    15% chance (disabled)
+			//               DoFiveFlyingShots:      20% chance (disabled)
 			int whichAttack = GenerateRandomNumber(100);
+			// if(whichAttack < ((enableHardMode) ? 50 : 75)) {
 			if(whichAttack < 75) {
 				this->currentattack = 2;
 				doStateChange(&StateID_FreezePlayers);
 			}
+			// if(whichAttack > ((enableHardMode) ? 49 : 74) && whichAttack < ((enableHardMode) ? 65 : 90)) {
 			if(whichAttack > 74 && whichAttack < 90) {
 				this->currentattack = 3;
 				doStateChange(&StateID_ShootFromBottomCorners);
 			}
+			// if(whichAttack > ((enableHardMode) ? 64 : 89) && whichAttack < ((enableHardMode) ? 80 : 100)) {
 			if(whichAttack > 89 && whichAttack < 100) {
 				this->currentattack = 4;
 				doStateChange(&StateID_ShootFromTopCorners);
 			}
+			// if(whichAttack > 79 && enableHardMode) {
+			// 	this->currentattack = 1;
+			// 	doStateChange(&StateID_DoFiveFlyingShots);
+			// }
 		}
 	}
 }

@@ -381,6 +381,16 @@ def fix_offs_pal_v2(offs):
 	return offs
 
 def fix_offs_ntsc_v1(offs):
+	# bad boys
+	if offs == 0x800B4630:
+		return 0x801DD320
+
+	if offs == 0x80779AE0:
+		return 0x80349B60 # Just a random unused address
+
+	if offs == 0x80779B94:
+		return 0x80349B60 # Just a random unused address
+
 	# .text section
 	if offs >= 0x800B4604 and offs <= 0x800C8E4C:
 		return offs - 0x50
@@ -457,6 +467,16 @@ def fix_offs_ntsc_v2(offs):
 
 
 def fix_offs_jpn_v1(offs):
+	# bad boys
+	if offs == 0x800B4630:
+		return 0x800B4600
+
+	if offs == 0x80779AE0:
+		return 0x80349B60 # Just a random unused address
+
+	if offs == 0x80779B94:
+		return 0x80349B60 # Just a random unused address
+
 	# .text section
 	if offs >= 0x800B4604 and offs <= 0x800B475C:
 		return offs - 0x50

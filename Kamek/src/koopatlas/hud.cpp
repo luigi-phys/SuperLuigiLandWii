@@ -27,6 +27,9 @@ enum WMHudAnimation {
 	UNHIDE_ALL,
 };
 
+extern "C" int GetGameLanguage(int nyeh); //nyeh is always 4 for some reasons
+
+
 
 int dWMHud_c::onCreate() {
 	if (!layoutLoaded) {
@@ -34,7 +37,7 @@ int dWMHud_c::onCreate() {
 		if (!gotFile)
 			return false;
 
-		bool output = layout.build("maphud.brlyt");
+		bool output = layout.build(((GetGameLanguage(4) == 0) ? "MapHUDJP.brlyt" : ((GetGameLanguage(4) == 6) ? "MapHUDDU.brlyt" : "MapHUD.brlyt")));
 
 		layout.layout.rootPane->trans.x = -112.0f;
 		if (IsWideScreen()) {
@@ -214,6 +217,16 @@ void dWMHud_c::playHideAnim(int id) {
 }
 
 
+static const wchar_t *UnknownLevelName[] = {
+	L"レベルめいが不明です ！ ",
+	L"Unknown Level Name!",
+	L"Unbekannter Levelname!",
+	L"Nom du Niveau Inconnu!",
+	L"¡Nombre del Nivel Desconocido!",
+	L"Nome Livello Sconosciuto!",
+	L"Level naam onbekend!"
+ };
+
 void dWMHud_c::loadHeaderInfo() {
 	dLevelInfo_c *levelInfo = &dLevelInfo_c::s_info;
 
@@ -221,8 +234,8 @@ void dWMHud_c::loadHeaderInfo() {
 			nodeForHeader->levelNumber[0]-1, nodeForHeader->levelNumber[1]-1);
 
 	if (infEntry == 0) {
-		LevelName->SetString(L"Unknown Level Name!");
-		LevelNameS->SetString(L"Unknown Level Name!");
+		LevelName->SetString(UnknownLevelName[GetGameLanguage(4)]);
+		LevelNameS->SetString(UnknownLevelName[GetGameLanguage(4)]);
 		return;
 	}
 
@@ -232,17 +245,17 @@ void dWMHud_c::loadHeaderInfo() {
 	int charCount = 0;
 	
 	while (*sourceLevelName != 0 && charCount < 99) {
-		convertedLevelName[charCount] = *sourceLevelName;
+		convertedLevelName[charCount] = *((unsigned char*)sourceLevelName);
 		sourceLevelName++;
 		charCount++;
 	}
 	convertedLevelName[charCount] = 0;
-
+	charCount = ConvertEnglishToJapanese(convertedLevelName, nodeForHeader->levelNumber[0]-1, nodeForHeader->levelNumber[1]-1, charCount);
 	LevelName->SetString(convertedLevelName);
 	LevelNameS->SetString(convertedLevelName);
 
-	// a hack because I don't feel like editing the rlyt
-	LevelName->size.x = LevelNameS->size.x = 400.0f;
+	// a hack because I don't feel like editing the rlyt --Treeki
+	// LevelName->size.x = LevelNameS->size.x = 400.0f; RSM Edit: THANKS TREEKI IT TOOK ME HOURS TO FIGURE OUT YOU HARDCODED THAT !!!
 
 	// LEVEL NUMBER
 	wchar_t levelNumber[16];
@@ -337,21 +350,16 @@ void dWMHud_c::loadHeaderInfo() {
 	headerCol.colourise(save->hudHintH%1000, save->hudHintS, save->hudHintL);
 }
 
+extern int songID2WorldID[19]; //fileselect.cpp
 
 void dWMHud_c::loadFooterInfo() {
 	SaveBlock *save = GetSaveFile()->GetBlock(-1);
 
-	wchar_t convertedWorldName[32];
-	int i;
-	for (i = 0; i < 32; i++) {
-		convertedWorldName[i] = save->newerWorldName[i];
-		if (convertedWorldName[i] == 0)
-			break;
+	if(save->currentMapMusic > 0) {
+		// OSReport("Map Music: %d, songID2WorldID: %d\n", save->currentMapMusic, songID2WorldID[save->currentMapMusic]);
+		WriteWorldNameToTextBox(WorldName, songID2WorldID[save->currentMapMusic]);
+		WriteWorldNameToTextBox(WorldNameS, songID2WorldID[save->currentMapMusic]);
 	}
-	convertedWorldName[31] = 0;
-
-	WorldName->SetString(convertedWorldName);
-	WorldNameS->SetString(convertedWorldName);
 
 	WorldName->colour1 = save->hudTextColours[0];
 	WorldName->colour2 = save->hudTextColours[1];

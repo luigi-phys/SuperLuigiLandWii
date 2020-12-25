@@ -83,8 +83,6 @@ int dGameDisplay_c::doWaitCheck() { //So the reason i'm doing this in the gameSc
 			ExitStage(WORLD_MAP, 0, EXIT_LEVEL, MARIO_WIPE);                                                             //exit the current stage
 			/* Uncomment the following lines to make the gameScene layout disappear when B + ONE is pressed*/
 
-				//EDIT: I realise that i could just have made the main Pane that contains all the other panes invisible, meh. -RedStoneMatt 11/10/2020
-
 				//Commented because Mullkaw//
 			/*nw4r::lyt::Picture *_1 = dGameDisplay_c::instance->layout.findPictureByName("P_baseS_01");                   //getting the panes, too lazy to name them all
 			nw4r::lyt::Picture *_2 = dGameDisplay_c::instance->layout.findPictureByName("P_base_01");
@@ -193,16 +191,18 @@ int dGameDisplay_c::doWaitCheck() { //So the reason i'm doing this in the gameSc
 		OSReport("GameMgrP->eight._2C = %d\n", GameMgrP->eight._2C);
 		OSReport("GameMgrP->eight._30 = %d\n", GameMgrP->eight._30);
 	}
-	if(nowPressed & WPAD_MINUS) {                                                                                        //minus pressing counter
-		minuscounter++;                                                                                                  //increment it by one every press
-		if(minuscounter >= 16) {                                                                                         //if pressed 16 times
-			minuscounter = 0;                                                                                            //set it back to 0
-			enableDebugMode = !enableDebugMode;                                                                          //enable/disable the debug mode
-			//nw4r::lyt::TextBox *debugText = dGameDisplay_c::instance->layout.findTextBoxByName("T_debug_00");            //get the debugging textbox
-			//debugText->SetString(((enableDebugMode) ? L"Debug Mode" : L" "));                                            //make it visible or not
-			this->doHexCoin();                                                                                           //refresh the coin counter
-		}
-	}
+	// Removed in v1.1, use the star coin menu instead
+	// if(nowPressed & WPAD_MINUS) {                                                                                        //minus pressing counter
+	// 	minuscounter++;                                                                                                  //increment it by one every press
+	// 	if(minuscounter >= 16) {                                                                                         //if pressed 16 times
+	// 		minuscounter = 0;                                                                                            //set it back to 0
+	// 		enableDebugMode = !enableDebugMode;                                                                          //enable/disable the debug mode
+	// 		//nw4r::lyt::TextBox *debugText = dGameDisplay_c::instance->layout.findTextBoxByName("T_debug_00");            //get the debugging textbox
+	// 		//debugText->SetString(((enableDebugMode) ? L"Debug Mode" : L" "));                                            //make it visible or not
+	// 		this->doHexCoin();                                                                                           //refresh the coin counter
+	// 	}
+	// }
+	//*/
 	return orig_val; //Return what the original onExecute was supposed to return
 }
 

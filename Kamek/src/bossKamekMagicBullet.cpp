@@ -292,7 +292,7 @@ extern int getNybbleValue(u32 settings, int fromNybble, int toNybble, bool doOSR
 
 int daKameckMagic_c::getsettings() {
 	int orig_val = this->onCreate_orig();
-	OSReport("--------\nSpawning daKameckMagic_c:\n"); //Okay, listen, I KNOW this just makes the game lag for nothing because it's just debugging, BUT I FORGOT TO COMMENT IT !!! -RedStoneMatt 11/10/2020
+	OSReport("--------\nSpawning daKameckMagic_c:\n");
 	OSReport("this->settings: -> %d\n", this->settings);
 	OSReport("this->settings: nybble 5  -> %d\n", getNybbleValue(this->settings, 5, 5, true));
 	OSReport("this->settings: nybble 6  -> %d\n", getNybbleValue(this->settings, 6, 6, true));

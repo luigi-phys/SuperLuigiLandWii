@@ -15,9 +15,30 @@ SECTIONS {
 
 	CanExitThisLevel = 0x800B4E30;
 
+	GetGameLanguage = 0x800B4630;
+
+	corseClearBrlyt_English = 0x80779B08;
+	corseClearBrlyt_German = 0x80779B30;
+	corseClearBrlyt_French = 0x80779B1C;
+	corseClearBrlyt_Spanish = 0x80779B58;
+	corseClearBrlyt_Italian = 0x80779B44;
+	ContinueFromCorseClearBrlyt = 0x80779B68;
+
+	corseClearBrlan_English = 0x80779BBC;
+	corseClearBrlan_German = 0x80779BE4;
+	corseClearBrlan_French = 0x80779BD0;
+	corseClearBrlan_Spanish = 0x80779C0C;
+	corseClearBrlan_Italian = 0x80779BF8;
+	ContinueFromCorseClearBrlan = 0x80779C1C;
+
 	dword_803521BC = 0x803521BC;
 	dword_803521A8 = 0x803521A8;
 	dword_8042A5B0 = 0x8042A5B0;
+
+	ContinueFromPMLanguage = 0x8015A7BC;
+	PM_OtherLanguage = 0x8015A7B8;
+
+	onCreate_orig__11dDateFile_cFv = 0x8077CE80;
 
 	onExecute_orig__18daBossKameckDemo_cFv = 0x80B395A0;
 

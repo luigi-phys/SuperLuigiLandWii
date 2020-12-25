@@ -159,7 +159,7 @@ void dWMPathManager_c::setup() {
 			currentNode = pathLayer->nodes[0];
 		} else {
 			int butts = Remocon_GetButtons(GetActiveRemocon());
-			if ((butts & WPAD_MINUS) && (butts & WPAD_PLUS) && (butts & WPAD_ONE))
+			if ((butts & WPAD_MINUS) && (butts & WPAD_PLUS) && (butts & WPAD_ONE)) //Are you serious treeki ? I didn't know that ! -RSM
 				currentNode = pathLayer->nodes[0];
 			else
 				currentNode = pathLayer->nodes[save->current_path_node];
@@ -710,7 +710,7 @@ bool dWMPathManager_c::evaluateUnlockCondition(u8 *&in, SaveBlock *save, int sta
 
 
 bool dWMPathManager_c::doingThings() {
-	if (isEnteringLevel || (waitAfterUnlock > 0) || (completionAnimDelay > 0) ||
+	if ((isEnteringLevel) || (waitAfterUnlock > 0) || (completionAnimDelay > 0) ||
 			(waitAtStart > 0) || (waitAfterInitialPlayerAnim > 0) ||
 			panningCameraToPaths || panningCameraFromPaths ||
 			(waitBeforePanBack > 0) || !initialLoading ||
@@ -1025,7 +1025,7 @@ void dWMPathManager_c::execute() {
 
 
 void dWMPathManager_c::startMovementTo(dKPPath_s *path) {
-	SpammyReport("moving to path %p [%d,%d to %d,%d]\n", path, path->start->x, path->start->y, path->end->x, path->end->y);
+	OSReport("moving to path %p [%d,%d to %d,%d]\n", path, path->start->x, path->start->y, path->end->x, path->end->y);
 
 	if (!path->isAvailable && !enableBypass) { return; }
 	if (currentNode && dWMHud_c::instance)
@@ -1564,11 +1564,12 @@ void dWMPathManager_c::activatePoint() {
 		nw4r::snd::SoundHandle something2;
 		PlaySoundWithFunctionB4(SoundRelatedClass, &something2, (Player_Powerup[0] == 3) ? SE_VOC_MA_PLAYER_DECIDE_MAME: SE_VOC_MA_CS_COURSE_IN, 1);
 
+
 		daWMPlayer_c::instance->startAnimation(course_in, 1.2, 10.0, 0.0);
 		daWMPlayer_c::instance->setTargetRotY(0);
-
-		isEnteringLevel = true;
 		levelStartWait = 40;
+		isEnteringLevel = true;
+
 		enteredLevel = dLevelInfo_c::s_info.searchBySlot(w, l);
 
 		dKPMusic::stop();

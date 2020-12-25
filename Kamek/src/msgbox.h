@@ -25,6 +25,8 @@ class dMsgBoxManager_c : public dStageActor_c {
 		bool layoutLoaded;
 		bool visible;
 
+		bool doNotPause;
+
 		bool canCancel;
 		int delay;
 

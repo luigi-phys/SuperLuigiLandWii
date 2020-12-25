@@ -2,7 +2,7 @@ output_dir: "NewerASM"
 code_address: 0x808D9000
 modules:
   - processed/prolog.yaml
-  - processed/corseClear.yaml
+  - processed/corseClear.yaml #Used to hardcode the corseClear layout to english, now it adds it to dutch !
   - processed/apDebug.yaml
   - processed/hardMode.yaml
 #  - processed/layoutDebug.yaml
@@ -17,6 +17,7 @@ modules:
   - processed/bugfixes.yaml
   - processed/koopatlas.yaml
   - processed/pregame.yaml
+  - processed/pauseMenu.yaml #Pause Menu edit for japanese level names
   - processed/layouthax.yaml
   - processed/animtiles.yaml
   - processed/soundPlayer.yaml
@@ -28,6 +29,7 @@ modules:
 #  - processed/gakenoko.yaml
   - processed/gameScene.yaml #Debug mode (Haha now Mullkaw-senpai can't kill me with his impossible levels !)
   - processed/bossKamek.yaml #Everything about Kamek is here
+  - processed/bossMullkaw.yaml #That's a secret !
   - processed/quickrestart.yaml #The quick restart, of course
   - processed/poweruphax.yaml #I want sooo much to hide things in here, but people would mock me, so this file is unchanged :c
   - processed/heapbar.yaml

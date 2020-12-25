@@ -547,7 +547,7 @@ void dWMShop_c::loadInfo() {
 	int charCount = 0;
 	
 	while (*sourceName != 0 && charCount < 99) {
-		shopName[charCount] = *sourceName;
+		shopName[charCount] = *((unsigned char*)sourceName);
 		sourceName++;
 		charCount++;
 	}

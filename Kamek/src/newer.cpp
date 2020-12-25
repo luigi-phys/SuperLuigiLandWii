@@ -18,7 +18,7 @@ extern "C" void FuckUpYoshi(void *_this) {
 	nw4r::db::Exception_Printf_("Fruit eaten: %d\n", thing);
 	if (thing == 5) {
 		nw4r::db::Exception_Printf_("5th fruit eaten\n");
-		nw4r::db::Exception_Printf_("Let's try fucking up Yoshi!\n");
+		nw4r::db::Exception_Printf_("Let's try fucking up Yoshi ! \n");
 		daPlBase_c *yoshi = (daPlBase_c*)fBase_c::search(YOSHI, 0);
 		nw4r::db::Exception_Printf_("Fruit: %p ; Koopa: %p ; Yoshi: %p\n", _this, koopa, yoshi);
 		koopa->_vf220(yoshi);
@@ -29,7 +29,7 @@ extern "C" void FuckUpYoshi(void *_this) {
 
 extern "C" void FuckUpYoshi2() {
 	dEn_c *koopa = (dEn_c*)fBase_c::search(EN_NOKONOKO, 0);
-	nw4r::db::Exception_Printf_("Let's try fucking up Yoshi!\n");
+	nw4r::db::Exception_Printf_("Let's try fucking up Yoshi ! \n");
 	daPlBase_c *yoshi = (daPlBase_c*)fBase_c::search(YOSHI, 0);
 	koopa->_vf220(yoshi);
 	nw4r::db::Exception_Printf_("Yoshi fucked up. Yay.\n");
@@ -48,16 +48,140 @@ extern "C" void YoshiStateWrapper(daPlBase_c *_this, dStateBase_c *state, void *
 */
 
 
+extern "C" int GetGameLanguage(int nyeh); //nyeh is always 4 for some reasons
+
+//Enormous thanks to kinoko (from the NewerSMBW Translation Team), aoinfonr (from r/translator) and 南無さん (from discord) for the japanese translation !
+
+const wchar_t *level1names[] = {
+	L"クリボーあるく すなはま",
+	L"たいようサンサン とざん びより",
+	L"ドクドクぬまの うごくだいち",
+	L"ゆらゆらゆれる ブランコのもり",
+	L"せんりつ テレサクルーズ",
+	L"かぜ ふきあれる いせき",
+	L"はしれ ！ はしれ ！ はしれ ！ "
+};
+const wchar_t *level2names[] = {
+	L"ふりそそぐ ゆきと かざんだん",
+	L"ひびくばくおん ボムへいどうくつ",
+	L"うすやみにひかるおばけやしき",
+	L"しずむ テレサのかくれざと",
+	L"ながれるこおりで マグマくだり",
+	L"ながれ ながされ すいぼつせん",
+	L"すべれ ！ すべれ ！ すべれ ！ "
+};
+const wchar_t *level3names[] = {
+	L"ぶきみなやまみち",
+	L"きけん ！ てつばこじごく",
+	L"グツグツ ようがんのみずうみ",
+	L"あぶないガケわたり",
+	L"かなあみと クサリの だいくうどう",
+	L"たいけつ ！ さいはてのとう",
+	L"のぼれ ！ のぼれ ！ のぼれ ！ "
+};
+const wchar_t *level4names[] = {
+	L"きめろ ！ ふみだいとびエキスパート"
+};
+const wchar_t *worldnames[] = {
+	L"ノコノコへいや",
+	L"とけゆくこおりのたに",
+	L"じごくれんざん",
+	L"おまけワールド"
+};
+
+int ConvertEnglishToJapanese(wchar_t *output, int world, int level, int outputLength) {
+	if(GetGameLanguage(4) == 0) {
+		if(world == 0) {
+			wcscpy(output, level1names[level]);
+		}
+		if(world == 1) {
+			wcscpy(output, level2names[level]);
+		}
+		if(world == 2) {
+			wcscpy(output, level3names[level]);
+		}
+		if(world == 3) {
+			wcscpy(output, level4names[level]);
+		}
+		return wcslen(output);
+	}
+	else {
+		return outputLength;
+	}
+}
+
+void ConvertEnglishToJapanese(wchar_t *output, int world, int level) {
+	if(GetGameLanguage(4) == 0) {
+		if(world == 0) {
+			wcscpy(output, level1names[level]);
+		}
+		if(world == 1) {
+			wcscpy(output, level2names[level]);
+		}
+		if(world == 2) {
+			wcscpy(output, level3names[level]);
+		}
+		if(world == 3) {
+			wcscpy(output, level4names[level]);
+		}
+	}
+}
+
+
+void WriteJPWorldNameToTextBox(nw4r::lyt::TextBox *tb, int world) {
+	tb->SetString(worldnames[world]);
+}
+
+void GetJapaneseWorldName(wchar_t *output, int world) {
+	wcscpy(output, worldnames[world]);
+}
+
+
 void WriteAsciiToTextBox(nw4r::lyt::TextBox *tb, const char *source) {
 	int i = 0;
 	wchar_t buffer[1024];
 	while (i < 1023 && source[i]) {
-		buffer[i] = source[i];
+		buffer[i] = (unsigned char)(source[i]);
 		i++;
 	}
 	buffer[i] = 0;
 
 	tb->SetString(buffer);
+}
+
+#include "levelinfo.h"
+#include "worldnames.h"
+
+void WriteLevelNameToTextBox(nw4r::lyt::TextBox *tb, int world, int level) {
+	dLevelInfo_c *levelInfo = &dLevelInfo_c::s_info;
+	dLevelInfo_c::entry_s *infEntry = levelInfo->searchBySlot(world, level);
+
+	const char *source = levelInfo->getNameForLevel(infEntry);
+
+	int i = 0;
+	wchar_t buffer[1024];
+	while (i < 1023 && source[i]) {
+		buffer[i] = (unsigned char)(source[i]);
+		i++;
+	}
+	buffer[i] = 0;
+
+	ConvertEnglishToJapanese(buffer, world, level);
+	tb->SetString(buffer);
+}
+
+
+void WriteWorldNameToTextBox(nw4r::lyt::TextBox *tb, int world) {
+	if(GetGameLanguage(4) != 0) {
+		dWorldNames_c *worldNamesList = &dWorldNames_c::s_info;
+		// OSReport("SC search for %d-%d\n", world, GetGameLanguage(4));
+		dWorldNames_c::entry_s *singleWorldName = worldNamesList->searchBySlot(world-1, GetGameLanguage(4)-1);
+		// OSReport("Found %d-%d: %s\n", singleWorldName->worldSlot+1, singleWorldName->levelSlot+1, worldNamesList->getNameForLevel(singleWorldName));
+		WriteAsciiToTextBox(tb, worldNamesList->getNameForLevel(singleWorldName));
+	}
+	else {
+		WriteJPWorldNameToTextBox(tb, world-1);
+	}
 }
 
 
@@ -75,7 +199,7 @@ void getNewerLevelNumberString(int world, int level, wchar_t *dest) {
 		L"\x0B\x013D\xBEEF", // 25, final castle
 		L"\x0B\x014D\xBEEF", // 26, train
 		L"\x0B\x0132\xBEEF", // 27, airship
-		L"Bonus", // 28, Bonus levels
+		((GetGameLanguage(4) == 0) ? L"ボーナス" : L"Bonus"), // 28, Bonus levels
 		L"\x0B\x0147\xBEEF", // 29, yoshi's house
 		L"\x0B\x014E\xBEEF" L"1", // 30, key 1
 		L"\x0B\x014E\xBEEF" L"2", // 31, key 2
@@ -128,7 +252,6 @@ int getStarCoinCount() {
 
 	return coinsEarned;
 }
-
 
 struct GEIFS {
 	int starCoins, exits;
