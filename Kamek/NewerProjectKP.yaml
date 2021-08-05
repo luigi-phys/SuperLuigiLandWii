@@ -32,6 +32,7 @@ modules:
   - processed/bossMullkaw.yaml #That's a secret !
   - processed/quickrestart.yaml #The quick restart, of course
   - processed/poweruphax.yaml #I want sooo much to hide things in here, but people would mock me, so this file is unchanged :c
+  - processed/smallScoreMgr.yaml #Fixing Luigi's red points into green ones & Wario's green points into yellow ones
   - processed/heapbar.yaml
   - processed/randtiles.yaml
   - processed/objkinoko.yaml

@@ -76,6 +76,12 @@ SECTIONS {
 	instance__14dGameDisplay_c = 0x8042a608;
 	pow = 0x802E5894;
 
+	continueFromChangeSmallScore100Color = 0x80015474;
+	continueFromChangeSmallScore1000Color1 = 0x80015344;
+	continueFromChangeSmallScore1000Color2 = 0x80015374;
+	continueFromChangeSmallScore1UPColor1 = 0x800B48C4;
+	continueFromChangeSmallScore1UPColor2 = 0x800B48F4;
+
 	GabonRock_DropOutState = 0x80998CF0;
 	GabonRock_CrushState = 0x80998CB0;
 	forceHCGROPushBack = 0x8001DED0;
