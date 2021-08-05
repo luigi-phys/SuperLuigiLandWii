@@ -1039,7 +1039,7 @@ void dWMStarCoin_c::executeState_Wait() {
 				};
 				static const wchar_t *debugModeOffEN[msgCount] = {
 					L"You've turned off the Totally",
-					L"Debug-Modus deaktiviert.",
+					L"Secret Debug Mode.",
 					L"",
 					L"Sad, you won't be able to cheat",
 					L"anymore ! See you next time !",
