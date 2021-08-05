@@ -920,7 +920,7 @@ void dWMStarCoin_c::executeState_Wait() {
 				};
 				static const wchar_t *debugModeFR[msgCount] = {
 					L"Vous avez activé le Debug",
-					L"Mode Totallement Secret.",
+					L"Mode Totalement Secret.",
 					L"Je l'ai utilisé pour débuguer",
 					L"et pour éviter de mourir dans les",
 					L"niveaux de Mullkaw.",
@@ -1053,9 +1053,9 @@ void dWMStarCoin_c::executeState_Wait() {
 				};
 				static const wchar_t *debugModeOffFR[msgCount] = {
 					L"Vous avez désactivé le Debug",
-					L"Mode Totallement Secret.",
+					L"Mode Totalement Secret.",
 					L"",
-					L"Dommage, tu vas plus pouvoir",
+					L"Dommage, tu ne vas plus pouvoir",
 					L"tricher ! À la prochaine !",
 				};
 				static const wchar_t *debugModeOffSP[msgCount] = {
