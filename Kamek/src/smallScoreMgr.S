@@ -2,7 +2,7 @@
 .align 4
 #include <asm_setup.S>
 
-.extern continueFromChangeSmallScore100Color1
+.extern continueFromChangeSmallScore100Color
 .extern continueFromChangeSmallScore1000Color1
 .extern continueFromChangeSmallScore1000Color2
 .extern continueFromChangeSmallScore1UPColor1
