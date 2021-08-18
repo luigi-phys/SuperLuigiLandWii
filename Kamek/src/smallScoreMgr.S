@@ -52,7 +52,7 @@ ChangeSmallScore1UPColor2:
 .global SmallScore100Color
 SmallScore100Color:
 	.long 0x46FA46FF	#Luigi
-	.long 0xFAFF50FF	#Wario
+	.long 0xF2A1FFFF	#Wario
 	.long 0x46C8E6FF	#Blue Toad
 	.long 0xFAFF50FF	#Yellow Toad
 	.long 0xFAFFFFFF
@@ -62,7 +62,7 @@ SmallScore100Color:
 .global SmallScore1000Color1
 SmallScore1000Color1:
 	.long 0x32FA32FF	#Luigi
-	.long 0xFFFF00FF	#Wario
+	.long 0xE77AFFFF	#Wario
 	.long 0x00B9DCFF	#Blue Toad
 	.long 0xFFFF00FF	#Yellow Toad
 	.long 0xFFFFFFFF
@@ -70,7 +70,7 @@ SmallScore1000Color1:
 .global SmallScore1000Color2
 SmallScore1000Color2:
 	.long 0xFFFF00FF	#Luigi
-	.long 0xFFFFB4FF	#Wario
+	.long 0xF8D6FFFF	#Wario
 	.long 0xD2FFFAFF	#Blue Toad
 	.long 0xFFFFB4FF	#Yellow Toad
 	.long 0xFFFFFFFF
@@ -80,7 +80,7 @@ SmallScore1000Color2:
 .global SmallScore1UPColor1
 SmallScore1UPColor1:
 	.long 0xD2FF00FF	#Luigi
-	.long 0xFFFF64FF	#Wario
+	.long 0xF1ABFFFF	#Wario
 	.long 0xD0F0FFFF	#Blue Toad
 	.long 0xFFFF64FF	#Yellow Toad
 	.long 0xFFFFFFFF
@@ -88,7 +88,7 @@ SmallScore1UPColor1:
 .global SmallScore1UPColor2
 SmallScore1UPColor2:
 	.long 0x197D0AFF	#Luigi
-	.long 0xFFBE00FF	#Wario
+	.long 0xC179FFFF	#Wario
 	.long 0x1E2DF0FF	#Blue Toad
 	.long 0xFFBE00FF	#Yellow Toad
 	.long 0xFFBEFFFF
