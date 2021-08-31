@@ -7,6 +7,7 @@
 .extern continueFromChangeSmallScore1000Color2
 .extern continueFromChangeSmallScore1UPColor1
 .extern continueFromChangeSmallScore1UPColor2
+.extern continueFromChangePauseMenuColor
 
 #100
 
@@ -43,6 +44,16 @@ ChangeSmallScore1UPColor2:
 	lis r4, SmallScore1UPColor2@h
 	ori r4, r4, SmallScore1UPColor2@l
 	b continueFromChangeSmallScore1UPColor2
+
+#Pause Menu
+
+.global ChangePauseMenuColor
+ChangePauseMenuColor:
+	lis r4, PauseMenuColor1@h
+	ori r4, r4, PauseMenuColor1@l
+	lis r5, PauseMenuColor2@h
+	ori r5, r5, PauseMenuColor2@l
+	b continueFromChangePauseMenuColor
 
 .data
 .align 4
@@ -92,3 +103,21 @@ SmallScore1UPColor2:
 	.long 0x1E2DF0FF	#Blue Toad
 	.long 0xFFBE00FF	#Yellow Toad
 	.long 0xFFBEFFFF
+
+#Pause Menu
+
+.global PauseMenuColor1
+PauseMenuColor1:
+    .long 0x00461400    #Luigi
+    .long 0x2F204100    #Wario
+    .long 0x00005A00    #Blue Toad
+    .long 0x28280000    #Yellow Toad
+    .long 0xFFFFFFFF
+
+.global PauseMenuColor2
+PauseMenuColor2:
+    .long 0x3CBE32FF    #Luigi
+    .long 0xC179FFFF    #Wario
+    .long 0x4178FAFF    #Blue Toad
+    .long 0xFFFF3CFF    #Yellow Toad
+    .long 0xFFFFFFFF
