@@ -12,7 +12,7 @@ void restartLevel() {
 
 	if(GetActiveRemocon()->heldButtons & WPAD_TWO || GetActiveRemocon()->heldButtons & WPAD_A) {
 		ExitStage(WORLD_MAP, 0, LOSE_LEVEL, WIPE_BOWSER);
-		return;		
+		return;
 	}
 
 	if(((!Player_Lives[0]) || 
@@ -20,6 +20,7 @@ void restartLevel() {
 		((Player_Active[2]) && !Player_Lives[2]) ||
 		((Player_Active[3]) && !Player_Lives[3]))) {
 		ExitStage(WORLD_MAP, 0, LOSE_LEVEL, WIPE_BOWSER);
+		return;
 	}
 
 	StartLevelInfo sl;

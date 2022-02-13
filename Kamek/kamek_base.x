@@ -81,6 +81,7 @@ SECTIONS {
 	continueFromChangeSmallScore1000Color2 = 0x80015374;
 	continueFromChangeSmallScore1UPColor1 = 0x800B48C4;
 	continueFromChangeSmallScore1UPColor2 = 0x800B48F4;
+	continueFromChangePauseMenuColor = 0x800B3D88;
 
 	GabonRock_DropOutState = 0x80998CF0;
 	GabonRock_CrushState = 0x80998CB0;
