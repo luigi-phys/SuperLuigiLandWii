@@ -1619,7 +1619,7 @@ SECTIONS {
 	process__Q23m3d6fanm_cFv = 0x80168f20;
 	setCurrentFrame__Q23m3d6fanm_cFf = 0x80169120;
 	isAnimationDone__Q23m3d6fanm_cFv = 0x80169160;
-	querySomething__Q23m3d6fanm_cFv = 0x80169220;
+	querySomething__Q23m3d6fanm_cFf = 0x80169220;
 
 	__vt__Q23m3d8anmChr_c = 0x80303708;
 	__dt__Q23m3d8anmChr_cFv = 0x800260c0;
@@ -1904,6 +1904,28 @@ SECTIONS {
 
 	spawnCoinJump__7StageE4FRC4VEC3iii = 0x80066630;
 	sub_800757B0__14collisionMgr_cFP4VEC3PfUcic = 0x800757B0;
+
+	/* Luigi Physics */
+	isSaka__10daPlBase_cFv = 0x8004b1a0;
+	getSakaMoveAccele__10daPlBase_cFUc = 0x8004b580;
+	getLRMovementDirection__14dPlayerInput_cFPi = 0x8005e7a0;
+	getHeldOne__14dPlayerInput_cFv = 0x8005e610;
+	getSakaUpDown__14collisionMgr_cFUc = 0x80070820;
+	FLOAT_ARRAY_802eedc0 = 0x802eedc0;
+	icePowerChange__10daPlBase_cFi = 0x8004c1e0;
+	getSpeedData__10daPlBase_cFv = 0x80057650;
+	getSpeedDataInner__10daPlBase_cFP20PlayerSpeedDataInner = 0x8004bf80;
+	sc_DirSpeed__10daPlBase_c = 0x8042bb20;
+	getSakaStopAccele__10daPlBase_cFUc = 0x8004b520;
+	getMukiAngle__10daPlBase_cFUc = 0x80047480;
+	setWaterWalkFlag__7dAcPy_cFv = 0x80145f80;
+	m_hio__21dPlayerModelHandler_c = 0x803710a0;
+	DWORD_ARRAY_802f5108 = 0x802f5108;
+	getHeldTwoModifiedByFlags__14dPlayerInput_cFv = 0x8005e740;
+	jumpExecAir__7dAcPy_cFv = 0x80127c70;
+	chase__4sLibFPfff = 0x8015f5b0;
+	startSound__10daPlBase_cFii = 0x80057e70;
+	isStar__7dAcPy_cCFv = 0x80022170;
 
 
 	.text : {

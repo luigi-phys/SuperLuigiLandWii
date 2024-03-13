@@ -1664,6 +1664,8 @@ class collisionMgr_c {
 		collisionMgr_c();
 		virtual ~collisionMgr_c();
 
+		int getSakaUpDown(u8 dir);
+
 		dStageActor_c *owner;
 		sensorBase_s *pBelowInfo, *pAboveInfo, *pAdjacentInfo;
 
@@ -2044,10 +2046,10 @@ public:
 	Vec max_speed;
 	S16Vec rot;
 	S16Vec _106;
-	u32 _10C;
-	u32 _110;
+	float mSpeedF;
+	float mMaxSpeedF;
 	float y_speed_inc;
-	u32 _118;
+	float mMaxFallSpeed;
 	float x_speed_inc;
 	u32 _120;
 	bool visible;
@@ -2270,6 +2272,29 @@ class dPlayerInput_c {
 		int rollingHistoryOfTwoModifiedByFlags[4][10];
 };
 
+struct PlayerSpeedDataInner {
+	float _0;
+	float _4;
+	float _8;
+	float _c;
+	float _10;
+	float _14;
+	float _18;
+	float _1c;
+	float _20;
+};
+static_assert(sizeof(PlayerSpeedDataInner) == 0x24);
+
+struct PlayerSpeedData {
+	float _0;
+	float _4;
+	float _8;
+	PlayerSpeedDataInner _c;
+	PlayerSpeedDataInner _30;
+	PlayerSpeedDataInner _54;
+};
+static_assert(sizeof(PlayerSpeedData) == 0x78);
+
 
 class daPlBase_c : public dStageActor_c {
 	public:
@@ -2279,12 +2304,24 @@ class daPlBase_c : public dStageActor_c {
 		u8 data3[0xEA4 - 0x460];
 		dPlayerInput_c input;
 		// We're at 0x1008 now
-		u8 data2[0x1418 - 0x1008];
+		u8 data2[0x1060 - 0x1008];
+		PlayerSpeedData* mpSpeedDataNormal;
+		PlayerSpeedData* mpSpeedDataStar;
+		// We're at 0x1068 now
+		u8 data4[0x10D4 - 0x1068];
+		u32 _10d4;
+		// We're at 0x10D8 now
+		u8 data5[0x1418 - 0x10D8];
 		dStateWrapper_c<daPlBase_c> demoStates;
 		u32 demoStateParam;
 		u32 _1458, _145C;
 		u8 _1460;
 		dStateWrapper_c<daPlBase_c> states2;
+		u8 _14a0[4];
+		u32 mAction;
+		u32 _14a8[(0x14D4 - 0x14A8) / sizeof(u32)];
+
+		static const float sc_DirSpeed[2];
 
 		void justFaceSpecificDirection(int direction);
 		void moveInDirection(float *targetX, float *speed);
@@ -2297,16 +2334,248 @@ class daPlBase_c : public dStageActor_c {
 		void clearFlag(int flag);
 		bool testFlag(int flag);
 
+		bool isSaka();
+		float getSakaMoveAccele(u8 dir);
+		float getSakaStopAccele(u8 dir);
+
+		void icePowerChange(int);
+
+		const PlayerSpeedData* getSpeedData();
+		void getSpeedDataInner(PlayerSpeedDataInner*);
+
+		s16 getMukiAngle(u8 dir);
+
+		void startSound(int soundId, int);
+
 		static daPlBase_c *findByID(int id);
 };
+static_assert(offsetof(daPlBase_c, mpSpeedDataNormal) == 0x1060);
+static_assert(offsetof(daPlBase_c, demoStates) == 0x1418);
+static_assert(offsetof(daPlBase_c, _14a8) == 0x14A8);
+
+
+class dPlayerModelBase_c {
+	// dunno what's public and what's private here
+	// don't really care
+public:
+	dPlayerModelBase_c(u8 player_id);		// 800D5420
+	virtual ~dPlayerModelBase_c();			// 800D55D0
+
+	mHeapAllocator_c allocator;
+	u32 _20;
+	u32 _24;
+	m3d::anmChr_c someAnimation[2]; // actually PlayerAnim's
+	char yetAnotherAnimation[40]; // actually m3d::banm_c afaics -- is it even 40 bytes?
+	Vec HeadPos; // maybe not an array
+	Vec HatPos; // maybe not an array
+	Mtx finalMatrix;
+	Mtx firstMatrix;
+	Vec headOffs;
+	Vec pos;
+	u8 player_id_1;
+	u8 player_id_2;
+	u8 powerup_id;
+	u8 powerup_tex;
+	int current_anim;
+	int last_anim_maybe;
+	u32 _15C;
+	int someFlags;
+	u32 _164;
+	u32 _168; // related to jump_strings
+	u32 _16C;
+	u32 _170;
+	u32 _174;
+	u8 _178;
+	char padding[3]; // not needed?
+	u32 model_visibility_flags_maybe; // 0x100=star glow, 0x200=star effects
+	u32 mode_maybe;
+	float _184;
+	float _188;
+	u32 _18C;
+	char someArray[6][12]; // some unknown class/struct
+	char _1D8[0x24];
+	short _1FC;
+	short _1FE;
+	short _200;
+	char padding_[2]; // not needed?
+	u32 _204;
+	u32 _208;
+
+	class ModelThing {
+		public:
+			m3d::mdl_c body, head;
+	};
+
+	virtual int _vf0C();						// 800D6DA0
+	virtual void prepare();					// 800D5720
+	virtual void finaliseModel();				// 800D5740
+	virtual void update();						// 800D5750
+	virtual void update3DStuff();				// 800D5760
+	virtual void _vf20();						// 800D6D90
+	virtual void draw();						// 800D5C70
+	virtual ModelThing *getCurrentModel();				// 800D5870
+	virtual int getCurrentResFile();			// 800D62D0
+	virtual void setPowerup(u8 powerup_id);	// 800D5730
+	virtual void setPowerupTexture();			// 800D5CC0
+	virtual void _vf38();						// 800D6D80
+	virtual void _vf3C();						// 800BD750
+	virtual void enableStarColours();			// 800D6D70
+	virtual void disableStarColours();			// 800D6D60
+	virtual void enableStarEffects();			// 800BD740
+	virtual void disableStarEffects();			// 800BD730
+	virtual void getModelMatrix(u32 unk, Mtx *dest);	// 800D5820
+	virtual int _vf54();						// 80318D0C
+	virtual bool _vf58(int type, char *buf, bool unk); // 800D6930
+	virtual void startAnimation(int id, float updateRate, float unk, float frame);	// 800D5EC0
+	virtual int _vf60();						// 800D6920
+	virtual void _vf64(int id, float unk1, float unk2, float unk3); // 800D62F0
+	virtual void _vf68(int id, float unk);		// 800D63E0
+	virtual void _vf6C();						// 800D62E0
+	virtual void _vf70();						// 800D6690
+	virtual void _vf74();						// 800D66A0
+	virtual void _vf78();						// 800D66B0
+	virtual void SomethingRelatedToPenguinAnims();	// 800D66C0
+	virtual void _vf80();						// 800D6A20
+	virtual void _vf84(float frame);			// 800D5D00
+	virtual void _vf88(float frame);			// 800D5D70
+	virtual void _vf8C(float updateRate);		// 800D5D80
+	virtual void setUpdateRateForAnim1(float updateRate);	// 800D5DF0
+	virtual void _vf94();						// 800D6D40
+	virtual int _vf98();						// 800D6D30
+	virtual void _vf9C();						// 800D6D20
+	virtual int _vfA0();						// 800D6D10
+	virtual void _vfA4();						// 800D6D00
+	virtual int _vfA8();						// 800D6CF0
+	virtual void _vfAC(bool blah);						// 800BD720
+
+	// I won't even bother with non-virtual functions....
+
+	// Abood: But I will
+    bool isAnmStop()
+    {
+        return someAnimation[0].isAnimationDone();
+    }
+
+    float getAnmFrameMax() const
+    {
+        return someAnimation[0]._28;
+    }
+
+    float checkAnmFrame(float frame)
+    {
+        return someAnimation[0].querySomething(frame);
+    }
+};
+
+
+class dPyAnm_HIO_c {
+public:
+	u8 mID;
+	float mRate;
+	float mBlendDuration;
+};
+static_assert(sizeof(dPyAnm_HIO_c) == 0xC);
+
+
+class dPyAnmMain_HIO_c {
+public:
+	dPyAnm_HIO_c mPyAnm_HIO[177];
+};
+static_assert(sizeof(dPyAnmMain_HIO_c) == 0x84C);
+
+
+class dPyMdlBase_HIO_c {
+public:
+	u32 _0[0x28 / sizeof(u32)];
+	dPyAnmMain_HIO_c mPyAnmMain_HIO;
+	u32 _874[(0x950 - 0x874) / sizeof(u32)];
+};
+static_assert(sizeof(dPyMdlBase_HIO_c) == 0x950);
+
+
+class dPlayerModelHandler_c {
+public:
+	dPlayerModelHandler_c(u8 player_id);	// 800D6DB0
+	virtual ~dPlayerModelHandler_c();		// 800D6EF0
+
+	dPlayerModelBase_c *mdlClass;	// might be dPlayerModel_c ?
+
+	int loadModel(u8 player_id, int powerup_id, int unk);	// 800D6EE0
+	void update();											// 800D6F80
+	void setMatrix(Mtx *matrix);							// 800D6FA0
+	void setSRT(Vec position, S16Vec rotation, Vec scale);	// 800D7030
+	void callVF20();										// 800D70F0
+	void draw();											// 800D7110
+
+	void setAnm(int anmID, float rate, float blendDuration, float frame) {
+		mdlClass->startAnimation(
+			anmID,
+			rate,
+			blendDuration,
+			frame
+		);
+	}
+	
+	void setAnm(int anmID, float blendDuration, float frame) {
+		mdlClass->startAnimation(
+			anmID,
+			getAnmRate(anmID),
+			blendDuration,
+			frame
+		);
+	}
+	
+	void setAnm(int anmID, float frame) {
+		mdlClass->startAnimation(
+			anmID,
+			getAnmRate(anmID),
+			getAnmBlendDuration(anmID),
+			frame
+		);
+	}
+
+	static float getAnmRate(int anmID) {
+		return m_hio.mPyAnmMain_HIO.mPyAnm_HIO[anmID].mRate;
+	}
+
+	static float getAnmBlendDuration(int anmID) {
+		return m_hio.mPyAnmMain_HIO.mPyAnm_HIO[anmID].mBlendDuration;
+	}
+
+private:
+	int hasMatrix;	// might be bool ?
+
+	void allocPlayerClass(u8 player_id);					// 800D6E00
+
+	static dPyMdlBase_HIO_c m_hio;
+};
+
 
 class dAcPy_c : public daPlBase_c {
 	public:
 		// Can't be assed to build full headers right now
 		void *getYoshi(); // 80139A90
 
+		void setWaterWalkFlag();
+		void jumpExecAir();
+
+		// Actually a virtual function of dPlBase_c, but we can guarantee that
+		// instances of dAcPy_c will definitely call this one specifically
+		int isStar() const;
+
 		static dAcPy_c *findByID(int id);
+
+public:
+	u32 _14d4[(0x1564 - 0x14D4) / sizeof(u32)];
+	int jumpSoundRelated;
+	u32 _1568[(0x27CC - 0x1568) / sizeof(u32)];
+	u8 _27cc; // Some sort of direction
+	u32 _27d0[(0x2A60 - 0x27D0) / sizeof(u32)];
+	dPlayerModelHandler_c modelHandler;
+	u32 _2a6c[(0x2BA8 - 0x2A6C) / sizeof(u32)];
 };
+static_assert(offsetof(dAcPy_c, _14d4) == 0x14D4);
+static_assert(offsetof(dAcPy_c, _2a6c) == 0x2A6C);
 
 daPlBase_c *GetPlayerOrYoshi(int id);
 
@@ -3135,104 +3404,6 @@ public:
 };
 
 
-class dPlayerModelBase_c {
-	// dunno what's public and what's private here
-	// don't really care
-public:
-	dPlayerModelBase_c(u8 player_id);		// 800D5420
-	virtual ~dPlayerModelBase_c();			// 800D55D0
-
-	mHeapAllocator_c allocator;
-	u32 _20;
-	u32 _24;
-	char someAnimation[2][0x38]; // actually PlayerAnim's
-	char yetAnotherAnimation[40]; // actually m3d::banm_c afaics -- is it even 40 bytes?
-	Vec HeadPos; // maybe not an array
-	Vec HatPos; // maybe not an array
-	Mtx finalMatrix;
-	Mtx firstMatrix;
-	Vec headOffs;
-	Vec pos;
-	u8 player_id_1;
-	u8 player_id_2;
-	u8 powerup_id;
-	u8 powerup_tex;
-	int current_anim;
-	int last_anim_maybe;
-	u32 _15C;
-	int someFlags;
-	u32 _164;
-	u32 _168; // related to jump_strings
-	u32 _16C;
-	u32 _170;
-	u32 _174;
-	u8 _178;
-	char padding[3]; // not needed?
-	u32 model_visibility_flags_maybe; // 0x100=star glow, 0x200=star effects
-	u32 mode_maybe;
-	float _184;
-	float _188;
-	u32 _18C;
-	char someArray[6][12]; // some unknown class/struct
-	char _1D8[0x24];
-	short _1FC;
-	short _1FE;
-	short _200;
-	char padding_[2]; // not needed?
-	u32 _204;
-	u32 _208;
-
-	class ModelThing {
-		public:
-			m3d::mdl_c body, head;
-	};
-
-	virtual int _vf0C();						// 800D6DA0
-	virtual void prepare();					// 800D5720
-	virtual void finaliseModel();				// 800D5740
-	virtual void update();						// 800D5750
-	virtual void update3DStuff();				// 800D5760
-	virtual void _vf20();						// 800D6D90
-	virtual void draw();						// 800D5C70
-	virtual ModelThing *getCurrentModel();				// 800D5870
-	virtual int getCurrentResFile();			// 800D62D0
-	virtual void setPowerup(u8 powerup_id);	// 800D5730
-	virtual void setPowerupTexture();			// 800D5CC0
-	virtual void _vf38();						// 800D6D80
-	virtual void _vf3C();						// 800BD750
-	virtual void enableStarColours();			// 800D6D70
-	virtual void disableStarColours();			// 800D6D60
-	virtual void enableStarEffects();			// 800BD740
-	virtual void disableStarEffects();			// 800BD730
-	virtual void getModelMatrix(u32 unk, Mtx *dest);	// 800D5820
-	virtual int _vf54();						// 80318D0C
-	virtual bool _vf58(int type, char *buf, bool unk); // 800D6930
-	virtual void startAnimation(int id, float updateRate, float unk, float frame);	// 800D5EC0
-	virtual int _vf60();						// 800D6920
-	virtual void _vf64(int id, float unk1, float unk2, float unk3); // 800D62F0
-	virtual void _vf68(int id, float unk);		// 800D63E0
-	virtual void _vf6C();						// 800D62E0
-	virtual void _vf70();						// 800D6690
-	virtual void _vf74();						// 800D66A0
-	virtual void _vf78();						// 800D66B0
-	virtual void SomethingRelatedToPenguinAnims();	// 800D66C0
-	virtual void _vf80();						// 800D6A20
-	virtual void _vf84(float frame);			// 800D5D00
-	virtual void _vf88(float frame);			// 800D5D70
-	virtual void _vf8C(float updateRate);		// 800D5D80
-	virtual void setUpdateRateForAnim1(float updateRate);	// 800D5DF0
-	virtual void _vf94();						// 800D6D40
-	virtual int _vf98();						// 800D6D30
-	virtual void _vf9C();						// 800D6D20
-	virtual int _vfA0();						// 800D6D10
-	virtual void _vfA4();						// 800D6D00
-	virtual int _vfA8();						// 800D6CF0
-	virtual void _vfAC(bool blah);						// 800BD720
-
-	// I won't even bother with non-virtual functions....
-};
-
-
 class dPlayerModel_c : public dPlayerModelBase_c {
 	public:
 		// methods? what do you need those for...
@@ -3255,27 +3426,6 @@ class dPlayerModel_c : public dPlayerModelBase_c {
 		u32 currentPlayerModelID;
 		u32 lastPlayerModelID;
 		// tons of crap more, don't feel like fixing this up atm
-};
-
-
-class dPlayerModelHandler_c {
-public:
-	dPlayerModelHandler_c(u8 player_id);	// 800D6DB0
-	virtual ~dPlayerModelHandler_c();		// 800D6EF0
-
-	dPlayerModelBase_c *mdlClass;	// might be dPlayerModel_c ?
-
-	int loadModel(u8 player_id, int powerup_id, int unk);	// 800D6EE0
-	void update();											// 800D6F80
-	void setMatrix(Mtx *matrix);							// 800D6FA0
-	void setSRT(Vec position, S16Vec rotation, Vec scale);	// 800D7030
-	void callVF20();										// 800D70F0
-	void draw();											// 800D7110
-
-private:
-	int hasMatrix;	// might be bool ?
-
-	void allocPlayerClass(u8 player_id);					// 800D6E00
 };
 
 

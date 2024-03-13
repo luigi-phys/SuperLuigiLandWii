@@ -81,8 +81,8 @@ bool ResetAfterLevel(bool didItWork) {
 	// TimeStopFlag = 0;
 	MarioDescentRate = -4;
 	MarioJumpMax = 3.628;
-	MarioJumpArc = 2.5;
-	MiniMarioJumpArc = 2.5;
+	MarioJumpArc = 1.6;
+	MiniMarioJumpArc = 2.0;
 	// MarioSize = 1.0;
 	GlobalSpriteSize = 1.0;
 	GlobalSpriteSpeed = 1.0;
@@ -168,7 +168,7 @@ void LevelSpecial_Update(LevelSpecial *self) {
 				break;
 		
 	
-			case 3:											// Mario Gravity
+			case 3:											// Luigi Gravity
 				if (self->effect == 0)
 				{											//Low grav
 					MarioDescentRate = -2;
@@ -250,10 +250,10 @@ void LevelSpecial_Update(LevelSpecial *self) {
 				break;
 		
 	
-			case 3:											// Mario Gravity
+			case 3:											// Luigi Gravity
 				MarioDescentRate = -4;
-				MarioJumpArc = 2.5;
-				MiniMarioJumpArc = 2.5;
+				MarioJumpArc = 1.6;
+				MiniMarioJumpArc = 2.0;
 				MarioJumpMax = 3.628;
 				break;
 	

@@ -46,6 +46,14 @@ typedef int BOOL;
 
 #define NULL 0
 
+#ifndef static_assert
+    // https://stackoverflow.com/a/1597129
+    #define TOKENPASTE(x, y) x ## y
+    #define TOKENPASTE2(x, y) TOKENPASTE(x, y)
+
+    #define static_assert(condition, ...) typedef int TOKENPASTE2(static_assert_, __LINE__)[(condition) ? 1 : -1]
+#endif // static_assert
+
 /* Structures */
 typedef struct { f32 x, y; } VEC2, Vec2;
 typedef struct { f32 x, y, z; } VEC3, Vec, Vec3;
