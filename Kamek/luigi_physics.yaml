@@ -5,251 +5,211 @@ hooks:
     type: branch_insn
     branch_type: bl
     src_addr_pal: 0x8004c394
-    src_addr_ntsc: 0xdeadbeef
     target_func: 'OverrideLuigiXSpeedInc'
 
   - name: OverrideLuigiSwimYSpeedAdd
     type: branch_insn
     branch_type: bl
     src_addr_pal: 0x801307fc
-    src_addr_ntsc: 0xdeadbeef
     target_func: 'OverrideLuigiSwimYSpeedAdd'
 
   - name: OverrideNormalPowerSetWithSlipPowerSet0
     type: branch_insn
     branch_type: bl
     src_addr_pal: 0x80135290
-    src_addr_ntsc: 0xdeadbeef
     target_func: 'daPlBase_c__slipPowerSet_0'
 
   - name: OverrideSlipPowerSet1
     type: branch_insn
     branch_type: bl
     src_addr_pal: 0x8004ba98
-    src_addr_ntsc: 0xdeadbeef
     target_func: 'daPlBase_c__slipPowerSet_1'
 
   - name: OverrideSlipPowerSet0
     type: branch_insn
     branch_type: bl
     src_addr_pal: 0x8004baa8
-    src_addr_ntsc: 0xdeadbeef
     target_func: 'daPlBase_c__slipPowerSet_0'
     
   - name: LineGodMemFix
     type: patch
     addr_pal: 0x80898798
-    addr_ntsc: 0xdeadbeef
     data: '3860 0400'
 
   - name: LuigiPhysicsPatch0
     type: patch
     addr_pal: 0x802ef118
-    addr_ntsc: 0xdeadbeef
     data: '3D23D70A'
 
   - name: LuigiPhysicsPatch1
     type: patch
     addr_pal: 0x802ef208
-    addr_ntsc: 0xdeadbeef
     data: '3D23D70A'
 
   - name: LuigiPhysicsPatch2
     type: patch
     addr_pal: 0x802f591c
-    addr_ntsc: 0xdeadbeef
     data: '3FCCCCCD'
 
   - name: LuigiPhysicsPatch3
     type: patch
     addr_pal: 0x802f5920
-    addr_ntsc: 0xdeadbeef
     data: '3F800000'
 
   - name: LuigiPhysicsPatch4
     type: patch
     addr_pal: 0x802f5924
-    addr_ntsc: 0xdeadbeef
     data: '3E800000'
 
   - name: LuigiPhysicsPatch5
     type: patch
     addr_pal: 0x802f5928
-    addr_ntsc: 0xdeadbeef
     data: 'BE3851EC'
 
   - name: LuigiPhysicsPatch6
     type: patch
     addr_pal: 0x802f5930
-    addr_ntsc: 0xdeadbeef
     data: 'BE3851EC'
 
   - name: LuigiPhysicsPatch7
     type: patch
     addr_pal: 0x802f5934
-    addr_ntsc: 0xdeadbeef
     data: 'BE800000'
 
   - name: LuigiPhysicsPatch8
     type: patch
     addr_pal: 0x802f5950
-    addr_ntsc: 0xdeadbeef
     data: 'BE99999A'
 
   - name: LuigiPhysicsPatch9
     type: patch
     addr_pal: 0x802f5954
-    addr_ntsc: 0xdeadbeef
     data: 'BCF5C28F'
 
   - name: LuigiPhysicsPatch10
     type: patch
     addr_pal: 0x802f5958
-    addr_ntsc: 0xdeadbeef
     data: 'BE800000'
 
   - name: LuigiPhysicsPatch11
     type: patch
     addr_pal: 0x802f5964
-    addr_ntsc: 0xdeadbeef
     data: '40000000'
 
   - name: LuigiPhysicsPatch12
     type: patch
     addr_pal: 0x802f5968
-    addr_ntsc: 0xdeadbeef
     data: '3F99999A'
 
   - name: LuigiPhysicsPatch13
     type: patch
     addr_pal: 0x802f5990
-    addr_ntsc: 0xdeadbeef
     data: 'BD0F5C29'
 
   - name: LuigiPhysicsPatch14
     type: patch
     addr_pal: 0x802f5994
-    addr_ntsc: 0xdeadbeef
     data: 'BD4CCCCD'
 
   - name: LuigiPhysicsPatch15
     type: patch
     addr_pal: 0x802f5998
-    addr_ntsc: 0xdeadbeef
     data: 'BD99999A'
 
   - name: LuigiPhysicsPatch16
     type: patch
     addr_pal: 0x802f59c0
-    addr_ntsc: 0xdeadbeef
     data: 'BE3851EC'
 
   - name: LuigiPhysicsPatch17
     type: patch
     addr_pal: 0x802f59c4
-    addr_ntsc: 0xdeadbeef
     data: 'BE800000'
 
   - name: LuigiPhysicsPatch18
     type: patch
     addr_pal: 0x802f59dc
-    addr_ntsc: 0xdeadbeef
     data: 'BDCCCCCD'
 
   - name: LuigiPhysicsPatch19
     type: patch
     addr_pal: 0x802f59e0
-    addr_ntsc: 0xdeadbeef
     data: 'BDCCCCCD'
 
   - name: LuigiPhysicsPatch20
     type: patch
     addr_pal: 0x802f59e4
-    addr_ntsc: 0xdeadbeef
     data: 'BDA3D70A'
 
   - name: LuigiPhysicsPatch21
     type: patch
     addr_pal: 0x802f59ec
-    addr_ntsc: 0xdeadbeef
     data: 'BEAE147B'
 
   - name: LuigiPhysicsPatch22
     type: patch
     addr_pal: 0x802f58b8
-    addr_ntsc: 0xdeadbeef
     data: '3D4CCCCD'
 
   - name: LuigiPhysicsPatch23
     type: patch
     addr_pal: 0x802f58bc
-    addr_ntsc: 0xdeadbeef
     data: '3D4CCCCD'
 
   - name: LuigiPhysicsPatch24
     type: patch
     addr_pal: 0x802f58c0
-    addr_ntsc: 0xdeadbeef
     data: '3D23D70A'
 
   - name: LuigiPhysicsPatch25
     type: patch
     addr_pal: 0x8042db68
-    addr_ntsc: 0xdeadbeef
     data: 'BD4CCCCD'
 
   - name: LuigiPhysicsPatch26
     type: patch
     addr_pal: 0x8042db70
-    addr_ntsc: 0xdeadbeef
     data: 'BD0F5C29'
 
   - name: LuigiPhysicsPatch27
     type: patch
     addr_pal: 0x8042db6c
-    addr_ntsc: 0xdeadbeef
     data: 'BDA7EF9E'
 
   - name: LuigiPhysicsPatch28
     type: patch
     addr_pal: 0x8042bb3c
-    addr_ntsc: 0xdeadbeef
     data: '40000000'
 
   - name: dAcPy_c___jumpSet_patch_0
     type: branch_insn
     branch_type: bl
     src_addr_pal: 0x80128120
-    src_addr_ntsc: 0xdeadbeef
     target_func: 'dAcPy_c___jumpSet_patch'
 
   - name: dAcPy_c___jumpSet_patch_1
     type: patch
     addr_pal: 0x80128124
-    addr_ntsc: 0xdeadbeef
     data: '60000000 60000000'
 
   - name: dAcPy_c__jumpAirExec_patch_0
     type: branch_insn
     branch_type: bl
     src_addr_pal: 0x80127cb8
-    src_addr_ntsc: 0xdeadbeef
     target_func: 'dAcPy_c__jumpAirExec_patch'
 
   - name: dAcPy_c__jumpAirExec_patch_1
     type: patch
     addr_pal: 0x80127cbc
-    addr_ntsc: 0xdeadbeef
+    
     data: '60000000 60000000 60000000 60000000 60000000 60000000 60000000 60000000 60000000 60000000 60000000'
     
   - name: dAcPy_c__jumpStartWithPhysics
     type: add_func_pointer
     src_addr_pal: 0x80324e88
-    src_addr_ntsc: 0xdeadbeef
     target_func: 'dAcPy_c__jumpStartWithPhysics'
     
   - name: dAcPy_c__jumpExecAirWithPhysics
     type: add_func_pointer
     src_addr_pal: 0x80324e94
-    src_addr_ntsc: 0xdeadbeef
     target_func: 'dAcPy_c__jumpExecAirWithPhysics'
